@@ -2,14 +2,7 @@
 	define("RHIMO_PLUGIN_NAME", "Respacio Houzez Import");
 	define("RHIMO_THEME_TYPE", "1");
 	
-	function respacio_add_options_link(){
-
-		add_menu_page(__(RHIMO_PLUGIN_NAME), __(RHIMO_PLUGIN_NAME), 'manage_options', 'respacio_houzez_import', 'respacio_import', '', 6);
-		add_submenu_page('respacio_houzez_import','Import','Import','manage_options', 'respacio_houzez_import', 'respacio_import');
-		add_submenu_page('respacio_houzez_import','Export','Export','manage_options', 'respacio_houzez_export', 'respacio_export');
-	}
-
-	add_action('admin_menu', 'respacio_add_options_link');
+	
 	add_action('admin_enqueue_scripts', 'respacio_enqueue_styles' );
 	function respacio_enqueue_styles(){
 		wp_enqueue_style( 'custom-style', plugins_url( '/css/style.css', __FILE__ ) );
