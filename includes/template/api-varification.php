@@ -9,12 +9,8 @@ if(array_key_exists('property_verification_api',$_POST) && $_POST['property_veri
 }
 
 $message_btn = "";
-if(!isset($error)){
-	$error = "";
-}
-if(!isset($message)){
-	$message = "";
-}
+if(!isset($error)) $error = "";
+if(!isset($message)) $message = "";
 
 global $wpdb, $prop_web_name,$prop_options, $prop_messages;
 $sa_apikey_verify = get_option( 'verify_api');

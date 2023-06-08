@@ -20,7 +20,6 @@ use RespacioHouzezImport\ui;
  * making sure to execute the plugin after `plugin_loaded` hook
  */
 add_action('plugin_loaded',function(){
-    
 
     /**
      * always define your constant as early as possible
