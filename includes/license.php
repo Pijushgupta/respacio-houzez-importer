@@ -48,7 +48,7 @@ class license
      */
     public static function checkNewLicense($licenseKey = null){
         if($licenseKey == null) return;
-
+        $status = array();
         /**
          * Test firing Http request to check if it is successful with the provided API key
          */
@@ -78,7 +78,8 @@ class license
         if(!array_key_exists('status',$sampleDataFromCrm) || $sampleDataFromCrm["status"] != "success"){
             delete_option( 'property_verification_api' );
             delete_option( 'verify_api' );
-            return $status['error'] = 'Your license key is not valid, please check and try again.';
+             $status['error'] = 'Your license key is not valid, please check and try again.';
+             return $status;
         }
 
         /**
@@ -92,7 +93,8 @@ class license
             add_option('verify_api',true,'','yes');
             delete_option('sync_type');
             add_option('sync_type',1,'','yes');
-            return $status['message'] = "Your license key is verified successfully. Your properties will start to import in batches.";
+            $status['message'] = "Your license key is verified successfully. Your properties will start to import in batches.";
+            return $status;
         }
 
     }
