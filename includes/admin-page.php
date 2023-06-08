@@ -1,12 +1,6 @@
 <?php
-	define("RHIMO_PLUGIN_NAME", "Respacio Houzez Import");
-	define("RHIMO_THEME_TYPE", "1");
-	
 
-	// Live
-	define('RHIMO_API_BASE_URL',"https://crm.respacio.com/ws/properties");
-	define('RHIMO_FEED_URL',"https://crm.respacio.com/ws/properties/sync_properties_json");
-	define('RHIMO_PROPERTY_WEB_URL',"https://crm.respacio.com/ws/properties/sync_property_web_url");
+
 
 	function respacio_import(){
 		if(empty($_POST)){
