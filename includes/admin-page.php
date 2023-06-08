@@ -2,12 +2,6 @@
 	define("RHIMO_PLUGIN_NAME", "Respacio Houzez Import");
 	define("RHIMO_THEME_TYPE", "1");
 	
-	
-	add_action('admin_enqueue_scripts', 'respacio_enqueue_styles' );
-	function respacio_enqueue_styles(){
-		wp_enqueue_style( 'custom-style', plugins_url( '/css/style.css', __FILE__ ) );
-		wp_enqueue_script('my-script', plugins_url('/js/my-script.js',__FILE__ ));
-	}
 
 	// Live
 	define('RHIMO_API_BASE_URL',"https://crm.respacio.com/ws/properties");

@@ -25,4 +25,14 @@ class Ui{
 		add_submenu_page('respacio_houzez_import','Import','Import','manage_options', 'respacio_houzez_import', 'respacio_import');
 		add_submenu_page('respacio_houzez_import','Export','Export','manage_options', 'respacio_houzez_export', 'respacio_export');
     }
+
+    /**
+     * adding assets for plugin backend 
+     *
+     * @return void
+     */
+    public static function addAssets(){
+        wp_enqueue_style( 'custom-style', plugins_url( '/css/style.css', __FILE__ ) );
+		wp_enqueue_script('my-script', plugins_url('/js/my-script.js',__FILE__ ));
+    }
 }
