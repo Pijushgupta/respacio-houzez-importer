@@ -1,7 +1,13 @@
 <?php 
 /* Property API key Verifications */
 $property_export = get_option( 'property_export');
-$property_verification_api = !empty(sanitize_text_field($_POST['property_verification_api'])) ? sanitize_text_field($_POST['property_verification_api']) : "";
+
+$property_verification_api = '';
+
+if(array_key_exists('property_verification_api',$_POST) && $_POST['property_verification_api'] != ''){
+	$property_verification_api = sanitize_text_field($_POST['property_verification_api']);
+}
+
 $message_btn = "";
 if(!isset($error)){
 	$error = "";
