@@ -15,7 +15,7 @@
 </div>
 
 <?php
-if(sanitize_text_field($_POST['submit']) == 'Submit'){
+if(array_key_exists('submit',$_POST) && sanitize_text_field($_POST['submit']) == 'Submit'){
 
 	global $wpdb;
 	$exportType = !empty(sanitize_text_field($_POST['export_type'])) ? trim(sanitize_text_field($_POST['export_type'])) : 'XML' ;
