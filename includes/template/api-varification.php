@@ -21,7 +21,8 @@ $sa_apikey_verify = get_option( 'verify_api');
 $sa_apikey = get_option( 'property_verification_api');
 $sync_type = get_option( 'sync_type');
 $message1 = "";
-if(sanitize_text_field($_POST['property_sync_property'])){
+
+if(array_key_exists('property_sync_property',$_POST) && sanitize_text_field($_POST['property_sync_property'])){
 	$method = 'POST';
 	$data['lang_code'] = "en";
 	$property_sync = property_syncing_cb();
