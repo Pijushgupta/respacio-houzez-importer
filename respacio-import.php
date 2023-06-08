@@ -14,9 +14,20 @@ Author URI: https://respacio.com
 $autoloadFile = __DIR__ . DIRECTORY_SEPARATOR. 'vendor'. DIRECTORY_SEPARATOR .'autoload.php';
 if(file_exists($autoloadFile)) require_once $autoloadFile;
 
+use RespacioHouzezImport\Ui;
+
 $mfwp_prefix = 'mfwp_';
 $mfwp_plugin_name = 'Respacio Houzez Import';
-
-
-
 include('includes/admin-page.php');
+/**
+ * making sure to execute the plugin after `plugin_loaded` hook
+ */
+add_action('plugin_loaded',function(){
+    Ui::activate(); 
+});
+
+
+
+
+
+
