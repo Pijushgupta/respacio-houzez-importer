@@ -20,8 +20,7 @@ use RespacioHouzezImport\ui;
  * making sure to execute the plugin after `plugin_loaded` hook
  */
 add_action('plugin_loaded',function(){
-    $mfwp_prefix = 'mfwp_';
-    $mfwp_plugin_name = 'Respacio Houzez Import';
+    
 
     /**
      * always define your constant as early as possible
