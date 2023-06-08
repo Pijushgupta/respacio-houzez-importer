@@ -734,9 +734,11 @@
         }
 	}
 	
-	if($_GET["flag"] == 1){
-		copy_thumb_image_to_gallary();
-	}
+	/**
+	 * checking if flag as key exits or not.
+	 */
+	if(array_key_exists('flag',$GET) && $_GET["flag"] == 1 ) copy_thumb_image_to_gallary();
+	
 	
 	function copy_thumb_image_to_gallary(){
 		global $wpdb;
