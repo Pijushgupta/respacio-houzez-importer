@@ -1,0 +1,19 @@
+{
+    "name": "pijush/respacio-houzez-import",
+    "description": "Wordpress Plugin of Respacio CRM to import and export houzez data",
+    "type": "project",
+    "license": "GPLv2",
+    "autoload": {
+        "psr-4": {
+            "RespacioHouzezImport\\": "includes/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Pijush Gupta",
+            "email": "pijush@live.com"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {}
+}
