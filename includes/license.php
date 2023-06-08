@@ -93,7 +93,7 @@ class license
             $status['message'] = "Your license key is verified successfully. Your properties will start to import in batches.";
             return $status;
         }
-
+        return false;
     }
 
     public static function removeExistingKey(){
