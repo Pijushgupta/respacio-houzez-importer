@@ -18,10 +18,11 @@ class license
             /**
              * This block to verify submitted API Key
              */
-            $status = self::refreshLicense(sanitize_text_field($_POST["property_verification_api"]));
+            $status = self::checkNewLicense(sanitize_text_field($_POST["property_verification_api"]));
 
+            if(array_key_exists('message',$status)) $message = $status['message'];
+            if(array_key_exists('error',$status)) $error = $status['error'];
         }
-
 
     }
 
@@ -29,7 +30,55 @@ class license
      * @param $licenseKey
      * @return array error or success message. response['error'] or response['error']
      */
-    public static function refreshLicense($licenseKey){
+    public static function checkNewLicense($licenseKey = null){
+        if($licenseKey == null) return;
+
+        /**
+         * Test firing Http request to check if it is successful with the provided API key
+         */
+        $sampleDataFromCrm = wp_remote_post(RHIMO_API_BASE_URL, array(
+            'method'      => 'POST',
+            'timeout'     => 45,
+            'redirection' => 5,
+            'httpversion' => '1.0',
+            'blocking'    => true,
+            'headers'     => array(
+                "authorization"=> "Basic YWRtaW46MTIzNA==",
+                "x-api-key"=>$licenseKey,
+                "Content-Type"=>"application/x-www-form-urlencoded"
+            ),
+            'cookies' => array()
+        ));
+
+        $sampleDataFromCrm = json_decode($sampleDataFromCrm['body'],true);
+        /**
+         * http fetching is done
+         */
+
+        /**
+         * checking for error first,
+         * for cleaner approach
+         */
+        if(!array_key_exists('status',$sampleDataFromCrm) || $sampleDataFromCrm["status"] != "success"){
+            delete_option( 'property_verification_api' );
+            delete_option( 'verify_api' );
+            return $status['error'] = 'Your license key is not valid, please check and try again.';
+        }
+
+        /**
+         * if the key was okay and request/response was successfull
+         * handle the new license key properly
+         */
+        if(array_key_exists('status',$sampleDataFromCrm) && $sampleDataFromCrm["status"] == "success"){
+            delete_option( 'property_verification_api' );
+            delete_option( 'verify_api' );
+            add_option('property_verification_api',$licenseKey,'','yes');
+            add_option('verify_api',true,'','yes');
+            delete_option('sync_type');
+            add_option('sync_type',1,'','yes');
+            return $status['message'] = "Your license key is verified successfully. Your properties will start to import in batches.";
+        }
+
 
     }
 
