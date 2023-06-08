@@ -2,7 +2,7 @@
 namespace RespacioHouzezImport;
 if(!defined('ABSPATH')) exit;
 
-class Ui{
+class ui{
     public static function activate(){
         if(!function_exists('wp_get_current_user')) { include(ABSPATH . "wp-includes/pluggable.php"); }
 
