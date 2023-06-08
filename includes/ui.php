@@ -11,6 +11,10 @@ class ui{
              * calling addMenu Method 
              */
 			add_action('admin_menu', array('RespacioHouzezImport\Ui', 'addMenu'));
+
+            /**
+             * calling addAssets method.
+             */
             add_action('admin_enqueue_scripts', array('RespacioHouzezImport\Ui', 'addAssets'));
 		}
     }
