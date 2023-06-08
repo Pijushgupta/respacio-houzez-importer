@@ -44,10 +44,10 @@ class license
 
     /**
      * @param $licenseKey
-     * @return array error or success message. response['error'] or response['error']
+     * @return array|false error or success message. response['error'] or response['error']
      */
     public static function checkNewLicense($licenseKey = null){
-        if($licenseKey == null) return;
+        if($licenseKey == null) return false;
         $status = array();
         /**
          * Test firing Http request to check if it is successful with the provided API key
@@ -87,12 +87,9 @@ class license
          * handle the new license key properly
          */
         if(array_key_exists('status',$sampleDataFromCrm) && $sampleDataFromCrm["status"] == "success"){
-            delete_option( 'property_verification_api' );
-            delete_option( 'verify_api' );
-            add_option('property_verification_api',$licenseKey,'','yes');
-            add_option('verify_api',true,'','yes');
-            delete_option('sync_type');
-            add_option('sync_type',1,'','yes');
+            update_option('property_verification_api',$licenseKey,true);
+            update_option('verify_api',true,true);
+            update_option('sync_type',1,true);
             $status['message'] = "Your license key is verified successfully. Your properties will start to import in batches.";
             return $status;
         }
