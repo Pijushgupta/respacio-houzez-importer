@@ -52,7 +52,7 @@ if(array_key_exists('property_sync_property',$_POST) && sanitize_text_field($_PO
 	<div class="respacio-notice">
         <form action="" method="post">
 
-            <h2 class="activation_title">Activate Respacio</h2>
+            <h2 class="activation_title m-0">Activate Respacio</h2>
             <p>Enter your website API key from your Respacio CRM. </p>
             <div class="flex flex-row items-end">
             <?php if(!empty($sa_apikey_verify) && !empty($sa_apikey)) { ?>
