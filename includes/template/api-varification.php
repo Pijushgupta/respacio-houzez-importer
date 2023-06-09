@@ -54,7 +54,7 @@ if(array_key_exists('property_sync_property',$_POST) && sanitize_text_field($_PO
 
             <h2 class="activation_title">Activate Respacio</h2>
             <p>Enter your website API key from your Respacio CRM. </p>
-            
+            <div class="flex flex-row items-end">
             <?php if(!empty($sa_apikey_verify) && !empty($sa_apikey)) { ?>
 
 				<div id="title-wrap" class="input-text-wrap">
@@ -62,7 +62,7 @@ if(array_key_exists('property_sync_property',$_POST) && sanitize_text_field($_PO
 					
 					<input type="text" disabled='' name="remove_api" value="<?php echo get_option( 'property_verification_api'); ?>" id="respacio_verification_key" spellcheck="true" autocomplete="on">
 				</div>				
-				<input type="submit" name="remove_licence_key" value="Remove license key" id="verify_button" class="btn btn-submit verify_button"/>
+				<input type="submit" name="remove_licence_key" value="Remove license key" id="verify_button" class="btn btn-submit verify_button my-button"/>
 				
 			<?php } else { ?>
 			
@@ -71,8 +71,9 @@ if(array_key_exists('property_sync_property',$_POST) && sanitize_text_field($_PO
                 <input type="text" name="property_verification_api" size="30" autocomplete="off" value="<?php echo get_option( 'property_verification_api'); ?>" id="respacio_verification_key" spellcheck="true" autocomplete="on" placeholder="Enter your API key">
             </div>
 			
-			<input type="submit" name="property_verification_submit" value="Verify" href="#" id="verify_button" class="btn btn-submit verify_button"/>
+			<input type="submit" name="property_verification_submit" value="Verify" href="#" id="verify_button" class="btn btn-submit verify_button my-button"/>
 		<?php } ?>
+            </div>
         </form>
 		
 		<div id="sk_options_license_information" class="sa-sub-pane">

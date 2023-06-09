@@ -31,9 +31,11 @@ add_action('plugin_loaded',function(){
     if(!defined('RHIMO_API_BASE_URL')) define('RHIMO_API_BASE_URL',"https://crm.respacio.com/ws/properties");
     if(!defined('RHIMO_FEED_URL')) define('RHIMO_FEED_URL',"https://crm.respacio.com/ws/properties/sync_properties_json");
     if(!defined('RHIMO_PROPERTY_WEB_URL')) define('RHIMO_PROPERTY_WEB_URL',"https://crm.respacio.com/ws/properties/sync_property_web_url");
-    include('includes/admin-page.php');
+
     ui::activate();
-	corn:activate();
+	corn::activate();
+
+	include('includes/admin-page.php');
 });
 
 

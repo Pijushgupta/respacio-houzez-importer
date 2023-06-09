@@ -181,3 +181,28 @@ display: block;
 	color:#ccc;
 	float:right;
 }
+.flex{
+    display:flex;
+}
+.flex-row{
+    flex-direction: row;
+}
+.justify-center{
+    justify-content: center;
+}
+.justify-end{
+    justify-content: end;
+}
+.items-center{
+    align-items: center;
+}
+.items-end{
+    align-items: end;
+}
+.my-button{
+    padding: 11px 20px;
+    height: auto;
+    border: 0 !important;
+    line-height: initial;
+    box-shadow: none;
+}
