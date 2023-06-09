@@ -52,9 +52,18 @@ display: block;
 
 .respacio-notice p{font-size:16px;}
 .res-success-msg{font-size:16px; color:#3A5F0B;font-weight:bold;}
-.res-error-msg{font-size:16px; color:#ff0000;font-weight:bold;}
+.res-error-msg{font-size: 16px;
+    color: #ff0000;
 
+    background: rgb(255 0 0 / 13%);
+    display: inline-block;
+    padding: 15px;
+    margin-top: 10px;
+    border-radius: 6px;}
 
+.res-error-msg:empty{
+    display: none;
+}
 /* The container */
 .container {
   display: inline-block;
