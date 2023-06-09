@@ -21,7 +21,9 @@ $message1 = "";
 if(array_key_exists('property_sync_property',$_POST) && sanitize_text_field($_POST['property_sync_property'])){
 	$method = 'POST';
 	$data['lang_code'] = "en";
+    //TODO: where is the defination ? remove it ?
 	$property_sync = property_syncing_cb();
+
 	$property_sync_json = json_decode($property_sync,true);
 	if($property_sync_json['is_record'] != 0){
 		$data['json_data']=$property_sync;
@@ -49,11 +51,12 @@ if(array_key_exists('property_sync_property',$_POST) && sanitize_text_field($_PO
 
 	<div class="respacio-notice">
         <form action="" method="post">
+
             <h2 class="activation_title">Activate Respacio</h2>
             <p>Enter your website API key from your Respacio CRM. </p>
             
             <?php if(!empty($sa_apikey_verify) && !empty($sa_apikey)) { ?>
-				
+
 				<div id="title-wrap" class="input-text-wrap">
 					<label id="api_key_prompt_text" class="prompt" for="api_key"></label>
 					

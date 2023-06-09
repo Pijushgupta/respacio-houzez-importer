@@ -15,28 +15,24 @@ class license
             if(get_option( 'verify_api') !== false) $message = "Your license key is verified successfully. Your properties will start to import in batches.";
 
         } else if(array_key_exists('property_verification_api', $_POST) && $_POST["property_verification_api"] != ''){
-            /**
-             * This block to verify submitted API Key
-             */
+
+            /*This block to verify submitted API Key*/
             $status = self::checkNewLicense(sanitize_text_field($_POST["property_verification_api"]));
 
             if(array_key_exists('message',$status)) $message = $status['message'];
             if(array_key_exists('error',$status)) $error = $status['error'];
 
         } else if( array_key_exists('remove_licence_key',$_POST) && $_POST["remove_licence_key"] != ''){
-            /**
-             * starting license key removal process
-             */
+
+			/* starting license key removal process */
             $status = self::removeExistingKey();
             if(array_key_exists('message',$status)) $message = $status['message'];
 
         } else if(array_key_exists('save_changes',$_POST) && $_POST["save_changes"] != ''){
-            /**
-             * save changes
-             */
-            delete_option('sync_type');
-            add_option('sync_type',sanitize_text_field($_POST["sync_type"]),'','yes');
+            /* save changes*/
+			update_option('sync_type',sanitize_text_field($_POST["sync_type"]),true);
         }
+
         $template_path = plugin_dir_path( __FILE__ ) . "template/api-varification.php";
         require_once ($template_path);
 
@@ -78,8 +74,8 @@ class license
         if(!array_key_exists('status',$sampleDataFromCrm) || $sampleDataFromCrm["status"] != "success"){
             delete_option( 'property_verification_api' );
             delete_option( 'verify_api' );
-             $status['error'] = 'Your license key is not valid, please check and try again.';
-             return $status;
+			$status['error'] = 'Your license key is not valid, please check and try again.';
+			return $status;
         }
 
         /**

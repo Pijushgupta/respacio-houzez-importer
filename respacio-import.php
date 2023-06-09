@@ -16,6 +16,7 @@ if(!file_exists($autoloadFile)) return;
 require_once $autoloadFile;
 
 use RespacioHouzezImport\ui;
+use RespacioHouzezImport\corn;
 /**
  * making sure to execute the plugin after `plugin_loaded` hook
  */
@@ -32,6 +33,7 @@ add_action('plugin_loaded',function(){
     if(!defined('RHIMO_PROPERTY_WEB_URL')) define('RHIMO_PROPERTY_WEB_URL',"https://crm.respacio.com/ws/properties/sync_property_web_url");
     include('includes/admin-page.php');
     ui::activate();
+	corn:activate();
 });
 
 
