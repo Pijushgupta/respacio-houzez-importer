@@ -57,7 +57,7 @@ function respacio_add_property_image_hourly() {
         global $wpdb;
         $table_name = $wpdb->prefix . "property_images";
         $post_img = $wpdb->get_results("SELECT * FROM $table_name WHERE image_url != '' AND is_download = 0 AND type = 1 order by id asc limit 10");
-        $image_sizes = respacio_get_image_sizes();
+        $image_sizes = RespacioHouzezImport\image::respacio_get_image_sizes();
 
         if(!empty($post_img)){
             foreach($post_img as $key => $val){
@@ -75,25 +75,7 @@ function respacio_pr($arr){
     print_r($arr);
 }
 
-function respacio_get_image_sizes(){
-    $image_sizes = array(
-        array("width"	=>	300,"height"	=>	200,"type"	=>	"medium"),
-        array("width"	=>	1024,"height"	=>	683,"type"	=>	"large"),
-        array("width"	=>	150,"height"	=>	150,"type"	=>	"thumbnail"),
-        array("width"	=>	768,"height"	=>	512,"type"	=>	"medium_large"),
-        array("width"	=>	1536,"height"	=>	1024,"type"	=>	"1536x1536"),
-        array("width"	=>	2048,"height"	=>	1366,"type"	=>	"2048x2048"),
-        array("width"	=>	1170,"height"	=>	785,"type"	=>	"houzez-gallery"),
-        array("width"	=>	592,"height"	=>	444,"type"	=>	"houzez-item-image-1"),
-        array("width"	=>	758,"height"	=>	564,"type"	=>	"houzez-item-image-4"),
-        array("width"	=>	584,"height"	=>	438,"type"	=>	"houzez-item-image-6"),
-        array("width"	=>	900,"height"	=>	600,"type"	=>	"houzez-variable-gallery"),
-        array("width"	=>	120,"height"	=>	90,"type"	=>	"houzez-map-info"),
-        array("width"	=>	496,"height"	=>	331,"type"	=>	"houzez-image_masonry"),
-    );
 
-    return $image_sizes;
-}
 
 function respacio_add_postmetadata($postId,$url,$image_sizes,$id){
 
