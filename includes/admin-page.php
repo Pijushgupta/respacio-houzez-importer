@@ -44,31 +44,9 @@ function respacio_cron_log($log_type=''){
     }
 }
 
-if(!wp_next_scheduled ('import_images_trigger')){
-    wp_schedule_event(time(),'every_five_minutes','import_images_trigger');
-}
 
-add_action('import_images_trigger', 'respacio_add_property_image_hourly');
 
-function respacio_add_property_image_hourly() {
-    // do something every hour
-    $sa_apikey_verify = get_option( 'verify_api');
-    if($sa_apikey_verify){
-        global $wpdb;
-        $table_name = $wpdb->prefix . "property_images";
-        $post_img = $wpdb->get_results("SELECT * FROM $table_name WHERE image_url != '' AND is_download = 0 AND type = 1 order by id asc limit 10");
-        $image_sizes = RespacioHouzezImport\image::respacio_get_image_sizes();
 
-        if(!empty($post_img)){
-            foreach($post_img as $key => $val){
-                $url = $val->image_url;
-                $postId = $val->post_id;
-                $id = $val->id;
-                respacio_add_postmetadata($postId,$url,$image_sizes,$id);
-            }
-        }
-    }
-}
 
 function respacio_pr($arr){
     echo "<pre>";
