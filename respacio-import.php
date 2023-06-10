@@ -17,6 +17,8 @@ require_once $autoloadFile;
 
 use RespacioHouzezImport\ui;
 use RespacioHouzezImport\corn;
+use RespacioHouzezImport\image;
+
 /**
  * making sure to execute the plugin after `plugin_loaded` hook
  */
@@ -34,9 +36,12 @@ add_action('plugin_loaded',function(){
 
     ui::activate();
 	corn::activate();
+	image::activate();
 
 	include('includes/admin-page.php');
 });
+
+
 
 
 
