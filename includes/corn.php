@@ -4,17 +4,17 @@ namespace RespacioHouzezImport;
 
 class corn {
 	public static function activate(){
-		add_filter( 'cron_schedules', array('RespacioHouzezImport\corn','addCronEvents'));
+		add_filter( 'cron_schedules', array('\RespacioHouzezImport\corn','addCronEvents'));
 		if (! wp_next_scheduled ('add_daily_properties')) {
 			wp_schedule_event(time(),'every_eleven_minutes','add_daily_properties');
 		}
-		add_action('add_daily_properties', array('RespacioHouzezImport\corn','respacio_sync_properties'));
+		add_action('add_daily_properties', array('\RespacioHouzezImport\corn','respacio_sync_properties'));
 
 		if(!wp_next_scheduled ('import_images_trigger')){
 			wp_schedule_event(time(),'every_five_minutes','import_images_trigger');
 		}
 
-		add_action('import_images_trigger',  array('RespacioHouzezImport\corn','respacio_add_property_image_hourly'));
+		add_action('import_images_trigger',  array('\RespacioHouzezImport\corn','respacio_add_property_image_hourly'));
 		if (! wp_next_scheduled ('property_attachment_download')) {
 			wp_schedule_event(time(),'every_sixty_minutes','property_attachment_download');
 		}
@@ -325,8 +325,8 @@ class corn {
 								}
 								$agent_id = wp_insert_post($agentData);
 
-								respacio_update_property_postmeta($agent_id,'fave_agent_email',$propAgent[1]);
-								respacio_update_property_postmeta($agent_id,'fave_agent_mobile',$propAgent[2]);
+								\RespacioHouzezImport\post::respacio_update_property_postmeta($agent_id,'fave_agent_email',$propAgent[1]);
+								\RespacioHouzezImport\post::respacio_update_property_postmeta($agent_id,'fave_agent_mobile',$propAgent[2]);
 
 							}
 							// INSERT AGENT DATA IN WP POSTS END
@@ -412,7 +412,7 @@ class corn {
 								$propVideoImage = explode('?image_id=',$propVideoImage);
 								if(isset($propVideoImage[1]) && !empty($propVideoImage[1])){
 									$inspiry_video_group_image_id = $propVideoImage[1] ;
-									respacio_update_property_postmeta($postId,'fave_video_image',$inspiry_video_group_image_id);
+									\RespacioHouzezImport\post::respacio_update_property_postmeta($postId,'fave_video_image',$inspiry_video_group_image_id);
 								} else {
 
 									$inspiry_video_group_image_id = $propVideoImage[0];
@@ -429,7 +429,7 @@ class corn {
 									} else if (($key = array_search($inspiry_video_group_image_id,$vImg_array)) !== false) {
 
 										$inspiry_video_group_image_id = $vImg_ids[$key];
-										respacio_update_property_postmeta($postId,'fave_video_image',$inspiry_video_group_image_id);
+										\RespacioHouzezImport\post::respacio_update_property_postmeta($postId,'fave_video_image',$inspiry_video_group_image_id);
 									}
 									//INSERT IMAGE URL IN PROPERTY IMAGES TABLE TO DOWNLOAD END
 
@@ -438,53 +438,53 @@ class corn {
 							// PROPERTY VIDEO URL & IMAGE END
 
 							//PROPERTY METAS UPDATE START
-							self::respacio_update_property_postmeta($postId,'_edit_last','2');
-							self::respacio_update_property_postmeta($postId,'_edit_lock',strtotime(date("Y-m-d H:i:s")).":".'2');
-							self::respacio_update_property_postmeta($postId,'_houzez_expiration_date_status','saved');
-							self::respacio_update_property_postmeta($postId,'fave_currency_info',"&nbsp;");
-							self::respacio_update_property_postmeta($postId,'slide_template','default');
-							self::respacio_update_property_postmeta($postId,'_vc_post_settings','');
-							self::respacio_update_property_postmeta($postId,'fave_property_size_prefix',$fave_property_size_prefix);
-							self::respacio_update_property_postmeta($postId,'fave_property_map',1);
-							self::respacio_update_property_postmeta($postId,'is_from_crm',1);
-							self::respacio_update_property_postmeta($postId,'fave_property_size',$propSize);
-							self::respacio_update_property_postmeta($postId,'_houzez_expiration_date',$_houzez_expiration_date);
-							self::respacio_update_property_postmeta($postId,'houzez_manual_expire',$houzez_manual_expire);
-							self::respacio_update_property_postmeta($postId,'fave_property_bedrooms',$propBedrooms);
-							self::respacio_update_property_postmeta($postId,'fave_property_bathrooms',$propBathrooms);
-							self::respacio_update_property_postmeta($postId,'fave_property_garage',$propGarage);
-							self::respacio_update_property_postmeta($postId,'fave_property_garage_size',$propGarageSize);
-							self::respacio_update_property_postmeta($postId,'fave_property_year',$propYear);
-							self::respacio_update_property_postmeta($postId,'fave_property_id',$propFavId);
-							self::respacio_update_property_postmeta($postId,'fave_property_price',$propDefPrice);
-							self::respacio_update_property_postmeta($postId,'fave_property_location',$propLocation);
-							self::respacio_update_property_postmeta($postId,'fave_agents',$agent_id);
-							self::respacio_update_property_postmeta($postId,'fave_floor_plans_enable',$propIsFloorPlan);
-							self::respacio_update_property_postmeta($postId,'floor_plans',$propFloorPlan);//serialize data
-							self::respacio_update_property_postmeta($postId,'fave_featured',$propIsFeatured);
-							self::respacio_update_property_postmeta($postId,'fave_property_map_address',$propAdd);
-							self::respacio_update_property_postmeta($postId,'fave_property_address',$prop_street_address);
-							//self::respacio_update_property_postmeta($postId,'fave_property_address',$propAdd);
-							self::respacio_update_property_postmeta($postId,'fave_video_url',$propVideoUrl);
-							self::respacio_update_property_postmeta($postId,'_dp_original','');
-							self::respacio_update_property_postmeta($postId,'houzez_geolocation_lat',$propLat);
-							self::respacio_update_property_postmeta($postId,'houzez_geolocation_long',$propLong);
-							self::respacio_update_property_postmeta($postId,'fave_single_top_area',$propTerSize);
-							self::respacio_update_property_postmeta($postId,'fave_property_zip',$propZip);
-							self::respacio_update_property_postmeta($postId,'fave_property_land',$propLand);
-							self::respacio_update_property_postmeta($postId,'fave_virtual_tour',$propVTour);
-							self::respacio_update_property_postmeta($postId,'fave_private_note',$propPNote);
-							self::respacio_update_property_postmeta($postId,'fave_property_map_street_view',$propMapSView);
-							self::respacio_update_property_postmeta($postId,'fave_multiunit_plans_enable',$propMUnitPlan);
-							self::respacio_update_property_postmeta($postId,'fave_property_sec_price',$fave_property_sec_price);
-							self::respacio_update_property_postmeta($postId,'fave_energy_global_index',$fave_energy_global_index);
-							self::respacio_update_property_postmeta($postId,'fave_energy_class',$fave_energy_class);
-							self::respacio_update_property_postmeta($postId,'fave_prop_homeslider',$fave_prop_homeslider);
-							self::respacio_update_property_postmeta($postId,'fave_property_price_postfix',$fave_property_price_postfix);
-							self::respacio_update_property_postmeta($postId,'fave_renewable_energy_global_index',$fave_renewable_energy_global_index);
-							self::respacio_update_property_postmeta($postId,'fave_energy_performance',$fave_energy_performance);
-							self::respacio_update_property_postmeta($postId,'fave_property_land_postfix',$fave_property_land_postfix);
-							self::respacio_update_property_postmeta($postId,'fave_single_content_area',$fave_single_content_area);
+							\RespacioHouzezImport\post::respacio_update_property_postmeta($postId,'_edit_last','2');
+							\RespacioHouzezImport\post::respacio_update_property_postmeta($postId,'_edit_lock',strtotime(date("Y-m-d H:i:s")).":".'2');
+							\RespacioHouzezImport\post::respacio_update_property_postmeta($postId,'_houzez_expiration_date_status','saved');
+							\RespacioHouzezImport\post::respacio_update_property_postmeta($postId,'fave_currency_info',"&nbsp;");
+							\RespacioHouzezImport\post::respacio_update_property_postmeta($postId,'slide_template','default');
+							\RespacioHouzezImport\post::respacio_update_property_postmeta($postId,'_vc_post_settings','');
+							\RespacioHouzezImport\post::respacio_update_property_postmeta($postId,'fave_property_size_prefix',$fave_property_size_prefix);
+							\RespacioHouzezImport\post::respacio_update_property_postmeta($postId,'fave_property_map',1);
+							\RespacioHouzezImport\post::respacio_update_property_postmeta($postId,'is_from_crm',1);
+							\RespacioHouzezImport\post::respacio_update_property_postmeta($postId,'fave_property_size',$propSize);
+							\RespacioHouzezImport\post::respacio_update_property_postmeta($postId,'_houzez_expiration_date',$_houzez_expiration_date);
+							\RespacioHouzezImport\post::respacio_update_property_postmeta($postId,'houzez_manual_expire',$houzez_manual_expire);
+							\RespacioHouzezImport\post::respacio_update_property_postmeta($postId,'fave_property_bedrooms',$propBedrooms);
+							\RespacioHouzezImport\post::respacio_update_property_postmeta($postId,'fave_property_bathrooms',$propBathrooms);
+							\RespacioHouzezImport\post::respacio_update_property_postmeta($postId,'fave_property_garage',$propGarage);
+							\RespacioHouzezImport\post::respacio_update_property_postmeta($postId,'fave_property_garage_size',$propGarageSize);
+							\RespacioHouzezImport\post::respacio_update_property_postmeta($postId,'fave_property_year',$propYear);
+							\RespacioHouzezImport\post::respacio_update_property_postmeta($postId,'fave_property_id',$propFavId);
+							\RespacioHouzezImport\post::respacio_update_property_postmeta($postId,'fave_property_price',$propDefPrice);
+							\RespacioHouzezImport\post::respacio_update_property_postmeta($postId,'fave_property_location',$propLocation);
+							\RespacioHouzezImport\post::respacio_update_property_postmeta($postId,'fave_agents',$agent_id);
+							\RespacioHouzezImport\post::respacio_update_property_postmeta($postId,'fave_floor_plans_enable',$propIsFloorPlan);
+							\RespacioHouzezImport\post::respacio_update_property_postmeta($postId,'floor_plans',$propFloorPlan);//serialize data
+							\RespacioHouzezImport\post::respacio_update_property_postmeta($postId,'fave_featured',$propIsFeatured);
+							\RespacioHouzezImport\post::respacio_update_property_postmeta($postId,'fave_property_map_address',$propAdd);
+							\RespacioHouzezImport\post::respacio_update_property_postmeta($postId,'fave_property_address',$prop_street_address);
+							//\RespacioHouzezImport\post::self::respacio_update_property_postmeta($postId,'fave_property_address',$propAdd);
+							\RespacioHouzezImport\post::respacio_update_property_postmeta($postId,'fave_video_url',$propVideoUrl);
+							\RespacioHouzezImport\post::respacio_update_property_postmeta($postId,'_dp_original','');
+							\RespacioHouzezImport\post::respacio_update_property_postmeta($postId,'houzez_geolocation_lat',$propLat);
+							\RespacioHouzezImport\post::respacio_update_property_postmeta($postId,'houzez_geolocation_long',$propLong);
+							\RespacioHouzezImport\post::respacio_update_property_postmeta($postId,'fave_single_top_area',$propTerSize);
+							\RespacioHouzezImport\post::respacio_update_property_postmeta($postId,'fave_property_zip',$propZip);
+							\RespacioHouzezImport\post::respacio_update_property_postmeta($postId,'fave_property_land',$propLand);
+							\RespacioHouzezImport\post::respacio_update_property_postmeta($postId,'fave_virtual_tour',$propVTour);
+							\RespacioHouzezImport\post::respacio_update_property_postmeta($postId,'fave_private_note',$propPNote);
+							\RespacioHouzezImport\post::respacio_update_property_postmeta($postId,'fave_property_map_street_view',$propMapSView);
+							\RespacioHouzezImport\post::respacio_update_property_postmeta($postId,'fave_multiunit_plans_enable',$propMUnitPlan);
+							\RespacioHouzezImport\post::respacio_update_property_postmeta($postId,'fave_property_sec_price',$fave_property_sec_price);
+							\RespacioHouzezImport\post::respacio_update_property_postmeta($postId,'fave_energy_global_index',$fave_energy_global_index);
+							\RespacioHouzezImport\post::respacio_update_property_postmeta($postId,'fave_energy_class',$fave_energy_class);
+							\RespacioHouzezImport\post::respacio_update_property_postmeta($postId,'fave_prop_homeslider',$fave_prop_homeslider);
+							\RespacioHouzezImport\post::respacio_update_property_postmeta($postId,'fave_property_price_postfix',$fave_property_price_postfix);
+							\RespacioHouzezImport\post::respacio_update_property_postmeta($postId,'fave_renewable_energy_global_index',$fave_renewable_energy_global_index);
+							\RespacioHouzezImport\post::respacio_update_property_postmeta($postId,'fave_energy_performance',$fave_energy_performance);
+							\RespacioHouzezImport\post::respacio_update_property_postmeta($postId,'fave_property_land_postfix',$fave_property_land_postfix);
+							\RespacioHouzezImport\post::respacio_update_property_postmeta($postId,'fave_single_content_area',$fave_single_content_area);
 							//PROPERTY METAS UPDATE END
 
 							//PROPERTY IMAGE START //
@@ -748,55 +748,6 @@ class corn {
 				$table_name = $wpdb->prefix."term_relationships";
 				$sql = "delete FROM ".$table_name." WHERE object_id = ".$postId." and term_taxonomy_id in (".implode(',',$delete_feature).")";
 				$wpdb->get_results($sql);
-			}
-		}
-	}
-
-	public static function respacio_update_property_postmeta($postId,$meta_key,$meta_value){
-		global $wpdb;
-
-		if(!empty($meta_value)){
-			$table_name = $wpdb->prefix . "postmeta";
-			$post_img = $wpdb->get_results("SELECT meta_id FROM $table_name WHERE (post_id = ".$postId." AND meta_key = '".$meta_key."')");
-
-
-			if(!empty($post_img)){
-
-				if($meta_key != "fave_video_image"){
-					$table_name = $wpdb->prefix . "postmeta";
-					$wpdb->update($table_name, array("meta_value"=>$meta_value),array('meta_id'=>$post_img[0]->meta_id));
-				}
-			}
-			else{
-
-				if($meta_key == "fave_video_image"){
-					$url = $meta_value;
-					$image_sizes = array(
-						array("width"	=>	150,"height"	=>	150,"type"	=>	"thumbnail"),
-						array("width"	=>	300,"height"	=>	227,"type"	=>	"medium"),
-						array("width"	=>	150,"height"	=>	114,"type"	=>	"post-thumbnail"),
-						array("width"	=>	385,"height"	=>	258,"type"	=>	"houzez-property-thumb-image"),
-						array("width"	=>	380,"height"	=>	280,"type"	=>	"houzez-property-thumb-image-v2"),
-						array("width"	=>	570,"height"	=>	340,"type"	=>	"houzez-image570_340"),
-						array("width"	=>	810,"height"	=>	430,"type"	=>	"houzez-property-detail-gallery"),
-						array("width"	=>	350,"height"	=>	350,"type"	=>	"houzez-image350_350"),
-						array("width"	=>	150,"height"	=>	110,"type"	=>	"thumbnail"),
-						array("width"	=>	350,"height"	=>	9999,"type"	=>	"houzez-widget-prop"),
-						array("width"	=>	0,"height"	=>	480,"type"	=>	"houzez-image_masonry"),
-					);
-
-
-					$meta_value = \RespacioHouzezImport\post::respacio_add_postmetadata($postId,$url,$image_sizes,0);
-
-				}
-
-				$meta_add = array(
-					"post_id"	=>	$postId,
-					"meta_key"	=>	$meta_key,
-					"meta_value"	=>	$meta_value
-				);
-
-				$wpdb->insert($table_name,$meta_add);
 			}
 		}
 	}

@@ -185,5 +185,52 @@ class post {
 		));
 	}
 
+	public static function respacio_update_property_postmeta($postId,$meta_key,$meta_value){
+		global $wpdb;
 
+		if(!empty($meta_value)){
+			$table_name = $wpdb->prefix . "postmeta";
+			$post_img = $wpdb->get_results("SELECT meta_id FROM $table_name WHERE (post_id = ".$postId." AND meta_key = '".$meta_key."')");
+
+
+			if(!empty($post_img)){
+
+				if($meta_key != "fave_video_image"){
+					$table_name = $wpdb->prefix . "postmeta";
+					$wpdb->update($table_name, array("meta_value"=>$meta_value),array('meta_id'=>$post_img[0]->meta_id));
+				}
+			}
+			else{
+
+				if($meta_key == "fave_video_image"){
+					$url = $meta_value;
+					$image_sizes = array(
+						array("width"	=>	150,"height"	=>	150,"type"	=>	"thumbnail"),
+						array("width"	=>	300,"height"	=>	227,"type"	=>	"medium"),
+						array("width"	=>	150,"height"	=>	114,"type"	=>	"post-thumbnail"),
+						array("width"	=>	385,"height"	=>	258,"type"	=>	"houzez-property-thumb-image"),
+						array("width"	=>	380,"height"	=>	280,"type"	=>	"houzez-property-thumb-image-v2"),
+						array("width"	=>	570,"height"	=>	340,"type"	=>	"houzez-image570_340"),
+						array("width"	=>	810,"height"	=>	430,"type"	=>	"houzez-property-detail-gallery"),
+						array("width"	=>	350,"height"	=>	350,"type"	=>	"houzez-image350_350"),
+						array("width"	=>	150,"height"	=>	110,"type"	=>	"thumbnail"),
+						array("width"	=>	350,"height"	=>	9999,"type"	=>	"houzez-widget-prop"),
+						array("width"	=>	0,"height"	=>	480,"type"	=>	"houzez-image_masonry"),
+					);
+
+
+					$meta_value = \RespacioHouzezImport\post::respacio_add_postmetadata($postId,$url,$image_sizes,0);
+
+				}
+
+				$meta_add = array(
+					"post_id"	=>	$postId,
+					"meta_key"	=>	$meta_key,
+					"meta_value"	=>	$meta_value
+				);
+
+				$wpdb->insert($table_name,$meta_add);
+			}
+		}
+	}
 }
