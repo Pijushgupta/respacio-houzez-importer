@@ -17,140 +17,10 @@ function respacio_add_term_relationship($post_id,$term_id,$type){
 
 }
 
-
-
-function respacio_cron_log($log_type=''){
-    global $wpdb;
-    $charset_collate = $wpdb->get_charset_collate();
-    if(!empty($log_type)){
-        $table_name = $wpdb->prefix . "cron_log";
-        $sql = "CREATE TABLE $table_name (
-    		   id INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
-    		   log_type varchar(255),
-    		   logtime DATETIME,
-    		   PRIMARY KEY (id)
-    		) $charset_collate;";
-
-        require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
-        dbDelta( $sql );
-
-        $table_name = $wpdb->prefix . "cron_log";
-        $insert_thumb = array(
-            "log_type"	=>	$log_type,
-            "logtime"	=>	date("Y-m-d H:i:s")
-        );
-
-        $wpdb->insert($table_name,$insert_thumb);
-    }
-}
-
-
-
-
-
 function respacio_pr($arr){
     echo "<pre>";
     print_r($arr);
 }
-
-
-
-
-
-function respacio_insert_post_data($postId,$uploaded_url,$file_name,$flag,$extention){
-
-    global $wpdb;
-    $post_array = array(
-        "post_author"	=>	1,
-        "post_date"		=>	date("Y-m-d H:i:s"),
-        "post_date_gmt"	=>	date("Y-m-d H:i:s"),
-        "post_status"	=>	'inherit',
-        "comment_status"=>	"closed",
-        "ping_status"	=>	"closed",
-        "post_name"		=>	$file_name,
-        "post_parent"	=>	$postId,
-        "guid"			=>	$uploaded_url.'/'.$file_name.'.'.$extention,
-        "post_type"		=>	"attachment",
-        "post_mime_type"=>	"image/jpg",
-    );
-
-    $post_attachment_id = wp_insert_post($post_array);
-    /*
-    $table_name = $wpdb->prefix . "postmeta";
-    $insert_thumb = array(
-        "post_id"	=>	$postId,
-        "meta_key"	=>	"_thumbnail_id",
-        "meta_value"	=>	$post_attachment_id
-    );
-
-    $wpdb->insert($table_name,$insert_thumb);
-    */
-    $table_name = $wpdb->prefix . "postmeta";
-    $post_img = $wpdb->get_results("SELECT meta_id,meta_value FROM $table_name WHERE (post_id = ".$postId." AND meta_key = '_thumbnail_id')");
-
-    if(!empty($post_attachment_id)){
-        if(empty($post_img)){
-
-            if(!empty($flag)){
-                $insert_thumb = array(
-                    "post_id"	=>	$postId,
-                    "meta_key"	=>	"_thumbnail_id",
-                    "meta_value"	=>	$post_attachment_id
-                );
-
-                $wpdb->insert($table_name,$insert_thumb);
-
-                $insert_thumb = array(
-                    "post_id"	=>	$postId,
-                    "meta_key"	=>	"fave_property_images",
-                    "meta_value"	=>	$post_attachment_id
-                );
-
-                $wpdb->insert($table_name,$insert_thumb);
-            }
-        }
-        else if(!empty($post_img) && empty($post_img[0]->meta_value)){
-            $table_name = $wpdb->prefix . "postmeta";
-            $wpdb->update($table_name, array("meta_value"	=>	$post_attachment_id), array('meta_id'=>$post_img[0]->meta_id));
-        }
-        else
-        {
-            if(!empty($flag)){
-                $insert_thumb = array(
-                    "post_id"	=>	$postId,
-                    "meta_key"	=>	"fave_property_images",
-                    "meta_value"	=>	$post_attachment_id
-                );
-
-                $wpdb->insert($table_name,$insert_thumb);
-            }
-        }
-    }
-    return $post_attachment_id;
-}
-
-
-function respacio_add_post_metadata($attachment_id,$subdir,$file_name,$serialize_array,$extention){
-    global $wpdb;
-    $post_meta = array(
-        "post_id"	=>	$attachment_id,
-        "meta_key"	=>	'_wp_attached_file',
-        'meta_value'	=>	$subdir.'/'.$file_name.'.'.$extention,
-    );
-
-    $table_name = $wpdb->prefix . "postmeta";
-    $wpdb->insert($table_name,$post_meta);
-
-    $post_meta = array(
-        "post_id"	=>	$attachment_id,
-        "meta_key"	=>	'_wp_attachment_metadata',
-        'meta_value'	=>	serialize($serialize_array),
-    );
-
-    $table_name = $wpdb->prefix . "postmeta";
-    $wpdb->insert($table_name,$post_meta);
-}
-
 
 function respacio_add_property_documents(){
 
@@ -344,7 +214,7 @@ function respacio_add_imagepostmetadata($postId,$url,$image_sizes,$id){
 
             if(isset($attachment_id) && !empty($attachment_id)){
 
-                respacio_add_post_metadata($attachment_id,$subdir,$file_name,$serialize_array,$extention);
+                \RespacioHouzezImport\post::respacio_add_post_metadata($attachment_id,$subdir,$file_name,$serialize_array,$extention);
 
             }
 

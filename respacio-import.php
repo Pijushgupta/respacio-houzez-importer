@@ -35,8 +35,9 @@ add_action('plugin_loaded',function(){
     if(!defined('RHIMO_PROPERTY_WEB_URL')) define('RHIMO_PROPERTY_WEB_URL',"https://crm.respacio.com/ws/properties/sync_property_web_url");
 
     ui::activate();
-	corn::activate();
 	image::activate();
+	corn::activate();
+
 
 	include('includes/admin-page.php');
 });

@@ -770,7 +770,7 @@ class corn {
 					);
 
 
-					$meta_value = self::respacio_add_postmetadata($postId,$url,$image_sizes,0);
+					$meta_value = \RespacioHouzezImport\post::respacio_add_postmetadata($postId,$url,$image_sizes,0);
 
 				}
 
@@ -799,73 +799,34 @@ class corn {
 					$url = $val->image_url;
 					$postId = $val->post_id;
 					$id = $val->id;
-					self::respacio_add_postmetadata($postId,$url,$image_sizes,$id);
+					\RespacioHouzezImport\post::respacio_add_postmetadata($postId,$url,$image_sizes,$id);
 				}
 			}
 		}
 	}
 
-	public static function respacio_add_postmetadata($postId,$url,$image_sizes,$id){
-
+	public static function respacio_cron_log($log_type=''){
 		global $wpdb;
+		$charset_collate = $wpdb->get_charset_collate();
+		if(!empty($log_type)){
+			$table_name = $wpdb->prefix . "cron_log";
+			$sql = "CREATE TABLE $table_name (
+    		   id INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+    		   log_type varchar(255),
+    		   logtime DATETIME,
+    		   PRIMARY KEY (id)
+    		) $charset_collate;";
 
-		if(!function_exists('wp_get_current_user')) {
-			include(ABSPATH . "wp-includes/pluggable.php");
-		}
+			require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
+			dbDelta( $sql );
 
-		if(!empty($url)){
-			$headers = get_headers($url);
-			$attachment_id = '';
-			if(!empty($headers) && $headers[0] == "HTTP/1.1 200 OK"){
+			$table_name = $wpdb->prefix . "cron_log";
+			$insert_thumb = array(
+				"log_type"	=>	$log_type,
+				"logtime"	=>	date("Y-m-d H:i:s")
+			);
 
-				$request = wp_remote_get($url, array( 'timeout' => 7200000, 'httpversion' => '1.1' ) );
-				$file_content = wp_remote_retrieve_body( $request );
-				$res = wp_upload_dir();
-
-				$file_obj = explode("/",$url);
-				$full_file_name = $file_obj[count($file_obj)-1];
-				list($file_name,$extention) = explode(".",$full_file_name);
-				$upload_dir = $res["path"].'/'.$file_name.'.'.$extention;
-				$uploaded_url = $res["url"];
-				$subdir = $res['subdir'];
-				file_put_contents($upload_dir,$file_content);
-
-				$attachment_id = respacio_insert_post_data($postId,$uploaded_url,$file_name,$id,$extention);
-				$serialize_array = array(
-					"width"	=>	110,
-					"height"	=>	200,
-					"file"	=>	$subdir.'/'.$file_name.'.'.$extention
-				);
-				foreach($image_sizes as $ims){
-
-					$width = $ims["width"];
-					$height = $ims["height"];
-					$new_file_name = $file_name.'-'.$width.'x'.$height.'.'.$extention;
-					$upload_dir = $res["path"].'/'.$new_file_name;
-					$img_url = $uploaded_url.'/'.$new_file_name;
-					file_put_contents($upload_dir,$file_content);
-
-					$image = wp_get_image_editor($upload_dir,array());
-					if ( ! is_wp_error( $image ) ) {
-						$image->resize( $width, $height, true );
-						$image->save($upload_dir);
-					}
-
-					$serialize_array["sizes"][$ims["type"]] = array(
-						"file"	=>	$new_file_name,
-						"width"	=>	$width,
-						"height"	=>	$height,
-					);
-				}
-
-				respacio_add_post_metadata($attachment_id,$subdir,$file_name,$serialize_array,$extention);
-				if(!empty($id)){
-					$table_name = $wpdb->prefix . "property_images";
-					$wpdb->update($table_name, array('is_download'=>1,"image_id"=>$attachment_id), array('id'=>$id));
-				}
-			}
-
-			return $attachment_id;
+			$wpdb->insert($table_name,$insert_thumb);
 		}
 	}
 }

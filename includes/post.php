@@ -1,0 +1,162 @@
+<?php
+
+namespace RespacioHouzezImport;
+
+class post {
+	public static function respacio_insert_post_data($postId,$uploaded_url,$file_name,$flag,$extention){
+
+		global $wpdb;
+		$post_array = array(
+			"post_author"	=>	1,
+			"post_date"		=>	date("Y-m-d H:i:s"),
+			"post_date_gmt"	=>	date("Y-m-d H:i:s"),
+			"post_status"	=>	'inherit',
+			"comment_status"=>	"closed",
+			"ping_status"	=>	"closed",
+			"post_name"		=>	$file_name,
+			"post_parent"	=>	$postId,
+			"guid"			=>	$uploaded_url.'/'.$file_name.'.'.$extention,
+			"post_type"		=>	"attachment",
+			"post_mime_type"=>	"image/jpg",
+		);
+
+		$post_attachment_id = wp_insert_post($post_array);
+		/*
+		$table_name = $wpdb->prefix . "postmeta";
+		$insert_thumb = array(
+			"post_id"	=>	$postId,
+			"meta_key"	=>	"_thumbnail_id",
+			"meta_value"	=>	$post_attachment_id
+		);
+
+		$wpdb->insert($table_name,$insert_thumb);
+		*/
+		$table_name = $wpdb->prefix . "postmeta";
+		$post_img = $wpdb->get_results("SELECT meta_id,meta_value FROM $table_name WHERE (post_id = ".$postId." AND meta_key = '_thumbnail_id')");
+
+		if(!empty($post_attachment_id)){
+			if(empty($post_img)){
+
+				if(!empty($flag)){
+					$insert_thumb = array(
+						"post_id"	=>	$postId,
+						"meta_key"	=>	"_thumbnail_id",
+						"meta_value"	=>	$post_attachment_id
+					);
+
+					$wpdb->insert($table_name,$insert_thumb);
+
+					$insert_thumb = array(
+						"post_id"	=>	$postId,
+						"meta_key"	=>	"fave_property_images",
+						"meta_value"	=>	$post_attachment_id
+					);
+
+					$wpdb->insert($table_name,$insert_thumb);
+				}
+			}
+			else if(!empty($post_img) && empty($post_img[0]->meta_value)){
+				$table_name = $wpdb->prefix . "postmeta";
+				$wpdb->update($table_name, array("meta_value"	=>	$post_attachment_id), array('meta_id'=>$post_img[0]->meta_id));
+			}
+			else
+			{
+				if(!empty($flag)){
+					$insert_thumb = array(
+						"post_id"	=>	$postId,
+						"meta_key"	=>	"fave_property_images",
+						"meta_value"	=>	$post_attachment_id
+					);
+
+					$wpdb->insert($table_name,$insert_thumb);
+				}
+			}
+		}
+		return $post_attachment_id;
+	}
+
+	public static function respacio_add_post_metadata($attachment_id,$subdir,$file_name,$serialize_array,$extention){
+		global $wpdb;
+		$post_meta = array(
+			"post_id"	=>	$attachment_id,
+			"meta_key"	=>	'_wp_attached_file',
+			'meta_value'	=>	$subdir.'/'.$file_name.'.'.$extention,
+		);
+
+		$table_name = $wpdb->prefix . "postmeta";
+		$wpdb->insert($table_name,$post_meta);
+
+		$post_meta = array(
+			"post_id"	=>	$attachment_id,
+			"meta_key"	=>	'_wp_attachment_metadata',
+			'meta_value'	=>	serialize($serialize_array),
+		);
+
+		$table_name = $wpdb->prefix . "postmeta";
+		$wpdb->insert($table_name,$post_meta);
+	}
+
+	public static function respacio_add_postmetadata($postId,$url,$image_sizes,$id){
+
+		global $wpdb;
+
+		if(!function_exists('wp_get_current_user')) {
+			include(ABSPATH . "wp-includes/pluggable.php");
+		}
+
+		if(!empty($url)){
+			$headers = get_headers($url);
+			$attachment_id = '';
+			if(!empty($headers) && $headers[0] == "HTTP/1.1 200 OK"){
+
+				$request = wp_remote_get($url, array( 'timeout' => 7200000, 'httpversion' => '1.1' ) );
+				$file_content = wp_remote_retrieve_body( $request );
+				$res = wp_upload_dir();
+
+				$file_obj = explode("/",$url);
+				$full_file_name = $file_obj[count($file_obj)-1];
+				list($file_name,$extention) = explode(".",$full_file_name);
+				$upload_dir = $res["path"].'/'.$file_name.'.'.$extention;
+				$uploaded_url = $res["url"];
+				$subdir = $res['subdir'];
+				file_put_contents($upload_dir,$file_content);
+
+				$attachment_id = \RespacioHouzezImport\post::respacio_insert_post_data($postId,$uploaded_url,$file_name,$id,$extention);
+				$serialize_array = array(
+					"width"	=>	110,
+					"height"	=>	200,
+					"file"	=>	$subdir.'/'.$file_name.'.'.$extention
+				);
+				foreach($image_sizes as $ims){
+
+					$width = $ims["width"];
+					$height = $ims["height"];
+					$new_file_name = $file_name.'-'.$width.'x'.$height.'.'.$extention;
+					$upload_dir = $res["path"].'/'.$new_file_name;
+					$img_url = $uploaded_url.'/'.$new_file_name;
+					file_put_contents($upload_dir,$file_content);
+
+					$image = wp_get_image_editor($upload_dir,array());
+					if ( ! is_wp_error( $image ) ) {
+						$image->resize( $width, $height, true );
+						$image->save($upload_dir);
+					}
+
+					$serialize_array["sizes"][$ims["type"]] = array(
+						"file"	=>	$new_file_name,
+						"width"	=>	$width,
+						"height"	=>	$height,
+					);
+				}
+
+				\RespacioHouzezImport\post::respacio_add_post_metadata($attachment_id,$subdir,$file_name,$serialize_array,$extention);
+				if(!empty($id)){
+					$table_name = $wpdb->prefix . "property_images";
+					$wpdb->update($table_name, array('is_download'=>1,"image_id"=>$attachment_id), array('id'=>$id));
+				}
+			}
+
+			return $attachment_id;
+		}
+	}
+}

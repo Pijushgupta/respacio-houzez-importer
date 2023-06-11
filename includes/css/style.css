@@ -185,6 +185,10 @@ display: block;
     background: none;
     box-shadow: none;
 }
+.respacio-notice:empty{
+    display: none;
+
+}
 .copyClip{
 	background: #006799 !important;
     border-radius: 5px;
