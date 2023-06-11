@@ -159,4 +159,31 @@ class post {
 			return $attachment_id;
 		}
 	}
+
+	public static function respacio_update_property_link(){
+		global $wpdb;
+
+		$table_name = $wpdb->prefix . "posts as p";
+		$join = $wpdb->prefix . "postmeta as pm";
+		$post_img = $wpdb->get_results("SELECT p.ID,p.guid,pm.meta_value,p.post_name FROM $table_name left join $join on pm.post_id = p.ID WHERE p.post_type = 'property' and pm.meta_key = 'fave_property_id'");
+
+		$api_key = get_option( 'property_verification_api');
+		$data = array("property_friendly_url"	=>	json_encode($post_img));
+		$propData = wp_remote_post(RHIMO_PROPERTY_WEB_URL, array(
+			'method'      => 'POST',
+			'timeout'     => 60,
+			'redirection' => 5,
+			'httpversion' => '1.0',
+			'blocking'    => true,
+			'body'    => $data,
+			'headers'     => array(
+				"authorization"=> "Basic YWRtaW46MTIzNA==",
+				"x-api-key"=>$api_key,
+				"Content-Type"=>"application/x-www-form-urlencoded"
+			),
+			'cookies' => array()
+		));
+	}
+
+
 }

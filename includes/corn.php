@@ -15,6 +15,22 @@ class corn {
 		}
 
 		add_action('import_images_trigger',  array('RespacioHouzezImport\corn','respacio_add_property_image_hourly'));
+		if (! wp_next_scheduled ('property_attachment_download')) {
+			wp_schedule_event(time(),'every_sixty_minutes','property_attachment_download');
+		}
+
+		add_action('property_attachment_download', array('\RespacioHouzezImport\image','respacio_add_property_documents'));
+		if (! wp_next_scheduled ('add_hourly_properties_url')) {
+			wp_schedule_event(time(),'every_sixty_minutes','add_hourly_properties_url');
+		}
+
+		add_action('add_hourly_properties_url', array('\RespacioHouzezImport\post','respacio_update_property_link'));
+
+		if (! wp_next_scheduled ('add_video_images')) {
+			wp_schedule_event(time(),'every_ninteen_minutes','add_video_images');
+		}
+
+		add_action('add_video_images', array('\RespacioHouzezImport\image','respacio_download_video_image'));
 	}
 
 	public static function addCronEvents($schedules ){

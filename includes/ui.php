@@ -25,9 +25,9 @@ class ui{
      * @return void
      */
     public static function addMenu(){
-        add_menu_page(__(RHIMO_PLUGIN_NAME), __(RHIMO_PLUGIN_NAME), 'manage_options', 'respacio_houzez_import', array('RespacioHouzezImport\license','verify'), '', 6);
-		add_submenu_page('respacio_houzez_import','Import','Import','manage_options', 'respacio_houzez_import', array('RespacioHouzezImport\license','verify'));
-		add_submenu_page('respacio_houzez_import','Export','Export','manage_options', 'respacio_houzez_export', 'respacio_export');
+        add_menu_page(__(RHIMO_PLUGIN_NAME), __(RHIMO_PLUGIN_NAME), 'manage_options', 'respacio_houzez_import', array('\RespacioHouzezImport\license','verify'), '', 6);
+		add_submenu_page('respacio_houzez_import','Import','Import','manage_options', 'respacio_houzez_import', array('\RespacioHouzezImport\license','verify'));
+		add_submenu_page('respacio_houzez_import','Export','Export','manage_options', 'respacio_houzez_export', array('\RespacioHouzezImport\export','init'));
     }
 
     /**
