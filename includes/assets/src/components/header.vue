@@ -1,5 +1,6 @@
 <script setup>
-
+import { useBreadcrumbStore } from '../stores/breadcrumb';
+const windowStore = useBreadcrumbStore()
 </script>
 
 <template>
@@ -17,6 +18,17 @@
     </div>
   </div>
   <div class="max-w-5xl mx-auto">
-    <span class="py-1 px-2 border inline-block mt-2 bg-white rounded font-medium">Houzez Import > Status</span>
+    <div class="py-1   mt-2  rounded  text-lg flex flex-row items-center min-h-[50px]">
+    <span class="cursor-pointer" v-on:click="windowStore.activeWindow = 0">Houzez Import </span>
+    <template v-if="windowStore.activeWindow != 0">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 m-2 inline"> <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /> </svg>
+    </template>
+    <template v-if="windowStore.activeWindow == 1"><span class="cursor-pointer font-medium">Status</span></template>
+    <template v-if="windowStore.activeWindow == 2"><span class="cursor-pointer font-medium">Cron Jobs</span></template>
+    <template v-if="windowStore.activeWindow == 3"><span class="cursor-pointer font-medium">Export</span></template>
+    <template v-if="windowStore.activeWindow == 4"><span class="cursor-pointer font-medium">Setting</span></template>
+    <template v-if="windowStore.activeWindow == 5"><span class="cursor-pointer font-medium">Knowledge Base</span></template>
+    
+    </div>
   </div>
 </template>

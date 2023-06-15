@@ -617,38 +617,37 @@ class export {
 	}
 
     public static function handleSubmit(){
-	    if(array_key_exists('submit',$_POST) && sanitize_text_field($_POST['submit']) == 'Submit'){
 
-		    global $wpdb;
-		    $exportType = !empty(sanitize_text_field($_POST['export_type'])) ? trim(sanitize_text_field($_POST['export_type'])) : 'XML' ;
+        global $wpdb;
+        $exportType = !empty(sanitize_text_field($_POST['export_type'])) ? trim(sanitize_text_field($_POST['export_type'])) : 'XML' ;
 
-		    $uploadFolderPath = wp_upload_dir();
-		    $uploadBaseDir = $uploadFolderPath['basedir'] ;
-		    $uploadBaseUrl = $uploadFolderPath['baseurl'] ;
+        $uploadFolderPath = wp_upload_dir();
+        $uploadBaseDir = $uploadFolderPath['basedir'] ;
+        $uploadBaseUrl = $uploadFolderPath['baseurl'] ;
 
-		    $finalFilePath = $uploadBaseDir.'/properties_export/';
-		    $finalFileSrc = $uploadBaseUrl.'/properties_export/';
+        $finalFilePath = $uploadBaseDir.'/properties_export/';
+        $finalFileSrc = $uploadBaseUrl.'/properties_export/';
 
-		    if (!file_exists($finalFilePath)) {
-			    mkdir($finalFilePath, 0777, true);
-		    }
+        if (!file_exists($finalFilePath)) {
+            mkdir($finalFilePath, 0777, true);
+        }
 
-		    if($exportType == 'XML'){
+        if($exportType == 'XML'){
 
-			    $fileName = 'properties_export_'.date('dmYhis').'.xml';
-			    $finalFilePath .= $fileName ;
-			    $finalFileSrc .= $fileName ;
+            $fileName = 'properties_export_'.date('dmYhis').'.xml';
+            $finalFilePath .= $fileName ;
+            $finalFileSrc .= $fileName ;
 
-			    \RespacioHouzezImport\export::respacio_export_XML($finalFilePath,$finalFileSrc);
-		    } else {
+            \RespacioHouzezImport\export::respacio_export_XML($finalFilePath,$finalFileSrc);
+        } else {
 
-			    $fileName = 'properties_export_'.date('dmYhis').'.xls';
-			    $finalFilePath .= $fileName ;
-			    $finalFileSrc .= $fileName ;
+            $fileName = 'properties_export_'.date('dmYhis').'.xls';
+            $finalFilePath .= $fileName ;
+            $finalFileSrc .= $fileName ;
 
-			    \RespacioHouzezImport\export::respacio_export_XLS($finalFilePath,$finalFileSrc);
-		    }
-	    }
+            \RespacioHouzezImport\export::respacio_export_XLS($finalFilePath,$finalFileSrc);
+        }
+
     }
 
 	public static function exportSelectionUi(){ ?>
