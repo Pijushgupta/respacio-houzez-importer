@@ -5,6 +5,7 @@ import Export from './export/export.vue'
 import Exportpage from './export/exportpage.vue'
 import Wpml from './wpml/wmpl.vue'
 import Setting from './setting/setting.vue'
+import Settingpage from './setting/settingpage.vue'
 import Guide from './guide/guide.vue'
 import Cron from './cron/cron.vue'
 import {ref} from 'vue';
@@ -28,5 +29,6 @@ const windowStore = useBreadcrumbStore();
     </template>
     <Statuspage v-if="windowStore.activeWindow == 1"/>
     <Exportpage v-if="windowStore.activeWindow == 3"/>
+    <Settingpage v-if="windowStore.activeWindow == 4"/>
   </div>
 </template>

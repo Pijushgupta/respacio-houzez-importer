@@ -16,6 +16,7 @@ if(!file_exists($autoloadFile)) return;
 require_once $autoloadFile;
 
 use RespacioHouzezImport\ui;
+use RespacioHouzezImport\ajax;
 use RespacioHouzezImport\corn;
 use RespacioHouzezImport\image;
 
@@ -34,7 +35,9 @@ add_action('plugin_loaded',function(){
     if(!defined('RHIMO_FEED_URL')) define('RHIMO_FEED_URL',"https://crm.respacio.com/ws/properties/sync_properties_json");
     if(!defined('RHIMO_PROPERTY_WEB_URL')) define('RHIMO_PROPERTY_WEB_URL',"https://crm.respacio.com/ws/properties/sync_property_web_url");
 	if(!defined('MODE_OLD')) define('MODE_OLD',false);
+
     ui::activate();
+	ajax::activate();
 	image::activate();
 	corn::activate();
 

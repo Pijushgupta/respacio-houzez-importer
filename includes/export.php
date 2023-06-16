@@ -1,6 +1,9 @@
 <?php
 
 namespace RespacioHouzezImport;
+if(!defined('ABSPATH')) exit();
+use \PhpOffice\PhpSpreadsheet\Spreadsheet;
+use \PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 class export {
 	public static function init(){
@@ -371,14 +374,15 @@ class export {
 			$doc->saveXML();
 			$xml = $doc->save($finalFilePath);
 
-
-			if($xml !== false){
-				?>
-                <script>respacio_showModal('<?php echo $finalFileSrc;?>');</script>
-				<?php
-			} else {
-				echo $xml ;
-			}
+            return $finalFileSrc;
+//			if($xml !== false){
+//				?>
+<!--                <script>respacio_showModal('--><?php //echo $finalFileSrc;?>//');</script>
+//				<?php
+//			} else {
+//				echo $xml ;
+//			}
+           // return $xml;
 		}
 		/* GET PROPERTIES FROM wp_posts TABLE END */
 
@@ -386,21 +390,25 @@ class export {
 
 
 	public static function respacio_export_XLS($finalFilePath,$finalFileSrc){
-
+		/**
+		 * getting the posts data for exportation
+		 */
 		$args = array(
 			'post_type'   => 'property',
 			'numberposts' => -1,
 			'post_status' => 'any'
 		);
-
 		$properties = get_posts( $args );
+		/**
+		 * end
+		 */
 
 		header("Content-Disposition: attachment; filename=\"$finalFilePath\"");
 		header("Content-Type: application/vnd.ms-excel");
 		header("Pragma: no-cache");
 		header("Expires: 0");
 
-		$finalData = array();
+
 		$headings[] = array("post_id","post_title","post_content","post_modified","slide_template","_thumbnail_id","fave_property_size","fave_property_size_prefix","fave_property_bedrooms","fave_property_bathrooms","fave_property_garage","fave_property_garage_size","fave_property_year","fave_property_id","fave_property_price","fave_property_price_postfix","fave_property_map","fave_property_map_address","fave_property_location","fave_property_country","fave_agents","fave_additional_features_enable","additional_features","fave_floor_plans_enable","floor_plans","fave_featured","fave_property_address","fave_property_zip","fave_video_url","fave_payment_status","fave_property_map_street_view","_dp_original","fave_property_sec_price","houzez_total_property_views","fave_multiunit_plans_enable","property_create_date","property_modified_date","houzez_recently_viewed","houzez_geolocation_lat","houzez_geolocation_long","fave_virtual_tour","fave_single_top_area","fave_single_content_area","fave_agent_display_option","fave_property_agency","_edit_lock","_edit_last","fave_currency_info","houzez_manual_expire","_houzez_expiration_date_status","fave_video_image","fave_attachments","images","property_type","property_status","property_feature","property_label","property_city","property_state","post_status");
 
 		$out = fopen($finalFilePath, 'w');
@@ -607,20 +615,107 @@ class export {
 		}
 
 		fclose($out);
-		if($out){
-			?>
-            <script>respacio_showModal('<?php echo $finalFileSrc;?>');</script>
-			<?php
-		} else {
-			echo $out ;
-		}
+        return $finalFileSrc;
+//		if($out){
+//			?>
+<!--            <script>respacio_showModal('--><?php //echo $finalFileSrc;?>//');</script>
+//			<?php
+//		} else {
+//			echo $out ;
+//		}
 	}
 
-    public static function handleSubmit(){
+    public static function createXls($finalFilePath,$finalFileSrc){
+	    /* getting the posts data for exportation*/
+	    $args = array('post_type'   => 'property','numberposts' => -1,'post_status' => 'any');
+	    $properties = get_posts( $args );
+	    /*end*/
+
+        /**
+	     * sheet headers
+	     */
+	    $headers = array(
+            "post_id",
+            "post_title",
+            "post_content",
+            "post_modified",
+            "slide_template",
+            "_thumbnail_id",
+            "fave_property_size",
+            "fave_property_size_prefix",
+            "fave_property_bedrooms",
+            "fave_property_bathrooms",
+            "fave_property_garage",
+            "fave_property_garage_size",
+            "fave_property_year",
+            "fave_property_id",
+            "fave_property_price",
+            "fave_property_price_postfix",
+            "fave_property_map",
+            "fave_property_map_address",
+            "fave_property_location",
+            "fave_property_country",
+            "fave_agents",
+            "fave_additional_features_enable",
+            "additional_features",
+            "fave_floor_plans_enable",
+            "floor_plans",
+            "fave_featured",
+            "fave_property_address",
+            "fave_property_zip",
+            "fave_video_url",
+            "fave_payment_status",
+            "fave_property_map_street_view",
+            "_dp_original",
+            "fave_property_sec_price",
+            "houzez_total_property_views",
+            "fave_multiunit_plans_enable",
+            "property_create_date",
+            "property_modified_date",
+            "houzez_recently_viewed",
+            "houzez_geolocation_lat",
+            "houzez_geolocation_long",
+            "fave_virtual_tour",
+            "fave_single_top_area",
+            "fave_single_content_area",
+            "fave_agent_display_option",
+            "fave_property_agency",
+            "_edit_lock",
+            "_edit_last",
+            "fave_currency_info",
+            "houzez_manual_expire",
+            "_houzez_expiration_date_status",
+            "fave_video_image",
+            "fave_attachments",
+            "images",
+            "property_type",
+            "property_status",
+            "property_feature",
+            "property_label",
+            "property_city",
+            "property_state",
+            "post_status"
+        );
+
+        $out = fopen($finalFilePath, 'w');
+
+	    $spreadsheet = new Spreadsheet();
+	    $activeWorksheet = $spreadsheet->getActiveSheet();
+	    $currentColumn = 'A';
+	    $row = 1;
+
+	    foreach ($headers as $header) {
+		    $activeWorksheet->setCellValue( $currentColumn . $row, $header);
+		    $currentColumn++;
+	    }
+
+
+
+    }
+
+    public static function handleSubmit($exportType){
 
         global $wpdb;
-        $exportType = !empty(sanitize_text_field($_POST['export_type'])) ? trim(sanitize_text_field($_POST['export_type'])) : 'XML' ;
-
         $uploadFolderPath = wp_upload_dir();
         $uploadBaseDir = $uploadFolderPath['basedir'] ;
         $uploadBaseUrl = $uploadFolderPath['baseurl'] ;
@@ -632,20 +727,20 @@ class export {
             mkdir($finalFilePath, 0777, true);
         }
 
-        if($exportType == 'XML'){
+        if(strtoupper($exportType)  == 'XML'){
 
             $fileName = 'properties_export_'.date('dmYhis').'.xml';
             $finalFilePath .= $fileName ;
             $finalFileSrc .= $fileName ;
 
-            \RespacioHouzezImport\export::respacio_export_XML($finalFilePath,$finalFileSrc);
+            return \RespacioHouzezImport\export::respacio_export_XML($finalFilePath,$finalFileSrc);
         } else {
 
             $fileName = 'properties_export_'.date('dmYhis').'.xls';
             $finalFilePath .= $fileName ;
             $finalFileSrc .= $fileName ;
 
-            \RespacioHouzezImport\export::respacio_export_XLS($finalFilePath,$finalFileSrc);
+            return \RespacioHouzezImport\export::respacio_export_XLS($finalFilePath,$finalFileSrc);
         }
 
     }
