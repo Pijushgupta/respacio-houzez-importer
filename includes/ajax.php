@@ -11,6 +11,7 @@ class ajax{
 		add_action('wp_ajax_exportAndDownload',array('RespacioHouzezImport\ajax','exportAndDownload'));
 		add_action('wp_ajax_checkApiKey',array('RespacioHouzezImport\ajax','checkApiKey'));
 		add_action('wp_ajax_isActivated',array('RespacioHouzezImport\ajax','isActivated'));
+		add_action('wp_ajax_removeKey',array('RespacioHouzezImport\ajax','removeKey'));
 	}
 
 	public static function exportAndDownload(){
@@ -57,6 +58,20 @@ class ajax{
 			echo json_encode(true);
 			wp_die();
 		}
+	}
+
+	/**
+	 * @return strin json/boolean
+	 */
+	public static function removeKey(){
+
+		if(!wp_verify_nonce($_POST['respacio_houzez_nonce'],'respacio_houzez_nonce'))  wp_die();
+		if(delete_option( 'property_verification_api' ) && delete_option( 'verify_api' )){
+			echo json_encode(true);
+		}else{
+			echo json_encode(false);
+		}
+		wp_die();
 	}
 
 	/**

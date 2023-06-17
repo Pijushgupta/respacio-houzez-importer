@@ -17064,6 +17064,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _cron_cron_vue__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./cron/cron.vue */ "./src/components/cron/cron.vue");
 /* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm-bundler.js");
 /* harmony import */ var _stores_breadcrumb__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ../stores/breadcrumb */ "./src/stores/breadcrumb.js");
+/* harmony import */ var _stores_globalstate__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ../stores/globalstate */ "./src/stores/globalstate.js");
+
 
 
 
@@ -17081,8 +17083,19 @@ __webpack_require__.r(__webpack_exports__);
     var __expose = _ref.expose;
     __expose();
     var windowStore = (0,_stores_breadcrumb__WEBPACK_IMPORTED_MODULE_10__.useBreadcrumbStore)();
+    /**
+     * this to keep activation status throughout the app
+     * @type {Store<"useGlobalstateStore", {isActivated: boolean}, {}, {getActivatedStatus(): void}>}
+     */
+    var license = (0,_stores_globalstate__WEBPACK_IMPORTED_MODULE_11__.useGlobalstateStore)();
+    license.getActivatedStatus();
+    /**
+     * ends
+     */
+
     var __returned__ = {
       windowStore: windowStore,
+      license: license,
       Status: _status_status_vue__WEBPACK_IMPORTED_MODULE_0__["default"],
       Statuspage: _status_statuspage_vue__WEBPACK_IMPORTED_MODULE_1__["default"],
       Export: _export_export_vue__WEBPACK_IMPORTED_MODULE_2__["default"],
@@ -17095,6 +17108,9 @@ __webpack_require__.r(__webpack_exports__);
       ref: vue__WEBPACK_IMPORTED_MODULE_9__.ref,
       get useBreadcrumbStore() {
         return _stores_breadcrumb__WEBPACK_IMPORTED_MODULE_10__.useBreadcrumbStore;
+      },
+      get useGlobalstateStore() {
+        return _stores_globalstate__WEBPACK_IMPORTED_MODULE_11__.useGlobalstateStore;
       }
     };
     Object.defineProperty(__returned__, '__isScriptSetup', {
@@ -17274,14 +17290,23 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 /* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm-bundler.js");
+/* harmony import */ var _stores_globalstate__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../stores/globalstate */ "./src/stores/globalstate.js");
+
+
+/** This pinia state contain activation status for the whole app*/
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   __name: 'settingpage',
   setup: function setup(__props, _ref) {
     var __expose = _ref.expose;
     __expose();
+    var license = (0,_stores_globalstate__WEBPACK_IMPORTED_MODULE_1__.useGlobalstateStore)();
+    /** Pinia state code ends **/
+
+    /** This to hold key when user add that to the input area **/
     var key = (0,vue__WEBPACK_IMPORTED_MODULE_0__.ref)('');
-    var isActive = (0,vue__WEBPACK_IMPORTED_MODULE_0__.ref)(false);
+
+    /** This to verify and activate Submitted API key*/
     var verifyKey = function verifyKey() {
       var data = new FormData();
       data.append('respacio_houzez_nonce', respacio_houzez_nonce);
@@ -17293,33 +17318,44 @@ __webpack_require__.r(__webpack_exports__);
       }).then(function (res) {
         return res.json();
       }).then(function (res) {
-        return console.log(res);
+        if (res == true || res == 'true') {
+          license.getActivatedStatus();
+          //TODO: Add notification
+        }
       })["catch"](function (err) {
         return console.log(err);
       });
     };
-    var checkValidation = function checkValidation() {
+    /*ends*/
+
+    var removeKey = function removeKey() {
       var data = new FormData();
       data.append('respacio_houzez_nonce', respacio_houzez_nonce);
-      data.append('action', 'isActivated');
+      data.append('action', 'removeKey');
       fetch(respacio_houzez_ajax_path, {
         method: 'POST',
         body: data
       }).then(function (res) {
         return res.json();
       }).then(function (res) {
-        isActive.value = res;
+        if (res == true || res == 'true') {
+          key.value = '';
+          license.getActivatedStatus();
+          //TODO:Add notification
+        }
       })["catch"](function (err) {
         return console.log(err);
       });
     };
-    checkValidation();
     var __returned__ = {
+      license: license,
       key: key,
-      isActive: isActive,
       verifyKey: verifyKey,
-      checkValidation: checkValidation,
-      ref: vue__WEBPACK_IMPORTED_MODULE_0__.ref
+      removeKey: removeKey,
+      ref: vue__WEBPACK_IMPORTED_MODULE_0__.ref,
+      get useGlobalstateStore() {
+        return _stores_globalstate__WEBPACK_IMPORTED_MODULE_1__.useGlobalstateStore;
+      }
     };
     Object.defineProperty(__returned__, '__isScriptSetup', {
       enumerable: false,
@@ -17630,10 +17666,6 @@ var _hoisted_3 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementV
 var _hoisted_4 = {
   "class": "flex flex-row w-1/2"
 };
-var _hoisted_5 = {
-  key: 1,
-  "class": "bg-blue-700 text-white px-4 py1 rounded ml-2"
-};
 function render(_ctx, _cache, $props, $setup, $data, $options) {
   return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_1, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_2, [_hoisted_3, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_4, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("input", {
     "class": "w-full",
@@ -17641,11 +17673,15 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     "onUpdate:modelValue": _cache[0] || (_cache[0] = function ($event) {
       return $setup.key = $event;
     })
-  }, null, 512 /* NEED_PATCH */), [[vue__WEBPACK_IMPORTED_MODULE_0__.vModelText, $setup.key]]), $setup.isActive === false ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("button", {
+  }, null, 512 /* NEED_PATCH */), [[vue__WEBPACK_IMPORTED_MODULE_0__.vModelText, $setup.key]]), $setup.license.isActivated == false ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("button", {
     key: 0,
     "class": "bg-blue-700 text-white px-4 py1 rounded ml-2",
     onClick: $setup.verifyKey
-  }, "Activate")) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), $setup.isActive === true ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("button", _hoisted_5, "Remove")) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)])])]);
+  }, "Activate")) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), $setup.license.isActivated == true ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("button", {
+    key: 1,
+    "class": "bg-blue-700 text-white px-4 py1 rounded ml-2",
+    onClick: $setup.removeKey
+  }, "Remove")) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)])])]);
 }
 
 /***/ }),
@@ -17802,6 +17838,47 @@ var useBreadcrumbStore = (0,pinia__WEBPACK_IMPORTED_MODULE_0__.defineStore)("bre
   actions: {
     changeActiveWindow: function changeActiveWindow(val) {
       this.activeWindow = val;
+    }
+  }
+});
+
+/***/ }),
+
+/***/ "./src/stores/globalstate.js":
+/*!***********************************!*\
+  !*** ./src/stores/globalstate.js ***!
+  \***********************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   useGlobalstateStore: () => (/* binding */ useGlobalstateStore)
+/* harmony export */ });
+/* harmony import */ var pinia__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! pinia */ "./node_modules/pinia/dist/pinia.mjs");
+
+var useGlobalstateStore = (0,pinia__WEBPACK_IMPORTED_MODULE_0__.defineStore)("useGlobalstateStore", {
+  state: function state() {
+    return {
+      isActivated: false
+    };
+  },
+  getters: {},
+  actions: {
+    getActivatedStatus: function getActivatedStatus() {
+      var _this = this;
+      var data = new FormData();
+      data.append('respacio_houzez_nonce', respacio_houzez_nonce);
+      data.append('action', 'isActivated');
+      fetch(respacio_houzez_ajax_path, {
+        method: 'POST',
+        body: data
+      }).then(function (res) {
+        return res.json();
+      }).then(function (res) {
+        _this.isActivated = res;
+      })["catch"](function (err) {
+        return console.log(err);
+      });
     }
   }
 });

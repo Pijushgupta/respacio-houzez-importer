@@ -11,10 +11,18 @@ import Cron from './cron/cron.vue'
 import {ref} from 'vue';
 
 import {useBreadcrumbStore} from '../stores/breadcrumb'
+import {useGlobalstateStore} from "../stores/globalstate";
 
 const windowStore = useBreadcrumbStore();
-
-
+/**
+ * this to keep activation status throughout the app
+ * @type {Store<"useGlobalstateStore", {isActivated: boolean}, {}, {getActivatedStatus(): void}>}
+ */
+const license = useGlobalstateStore();
+license.getActivatedStatus();
+/**
+ * ends
+ */
 </script>
 <template>
   <div class="max-w-5xl mx-auto pt-2">
