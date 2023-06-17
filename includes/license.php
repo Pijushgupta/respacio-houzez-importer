@@ -92,6 +92,33 @@ class license
         return false;
     }
 
+	/**
+	 * @param $key
+	 *
+	 * @return bool false on fail, true on success
+	 */
+	public static function testApiKey($key = null){
+		if($key == null) return;
+		$sampleDataFromCrm = wp_remote_post(RHIMO_API_BASE_URL, array(
+			'method'      => 'POST',
+			'timeout'     => 45,
+			'redirection' => 5,
+			'httpversion' => '1.0',
+			'blocking'    => true,
+			'headers'     => array(
+				"authorization"=> "Basic YWRtaW46MTIzNA==",
+				"x-api-key"=>$key,
+				"Content-Type"=>"application/x-www-form-urlencoded"
+			),
+			'cookies' => array()
+		));
+
+		$sampleDataFromCrm = json_decode($sampleDataFromCrm['body'],true);
+		if(array_key_exists('status',$sampleDataFromCrm) && $sampleDataFromCrm["status"] == "success") return true;
+
+		return false;
+
+	}
     public static function removeExistingKey(){
         delete_option( 'property_verification_api' );
         delete_option( 'verify_api' );
