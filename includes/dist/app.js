@@ -17291,9 +17291,15 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm-bundler.js");
 /* harmony import */ var _stores_globalstate__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../stores/globalstate */ "./src/stores/globalstate.js");
+/* harmony import */ var vue_toastification__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! vue-toastification */ "./node_modules/vue-toastification/dist/index.mjs");
 
 
 /** This pinia state contain activation status for the whole app*/
+
+
+/* ends */
+
+/** This to hold key when user add that to the input area **/
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   __name: 'settingpage',
@@ -17302,8 +17308,7 @@ __webpack_require__.r(__webpack_exports__);
     __expose();
     var license = (0,_stores_globalstate__WEBPACK_IMPORTED_MODULE_1__.useGlobalstateStore)();
     /** Pinia state code ends **/
-
-    /** This to hold key when user add that to the input area **/
+    /** Importing vue toast notification lib */
     var key = (0,vue__WEBPACK_IMPORTED_MODULE_0__.ref)('');
 
     /** This to verify and activate Submitted API key*/
@@ -17320,7 +17325,18 @@ __webpack_require__.r(__webpack_exports__);
       }).then(function (res) {
         if (res == true || res == 'true') {
           license.getActivatedStatus();
-          //TODO: Add notification
+          var notification = (0,vue_toastification__WEBPACK_IMPORTED_MODULE_2__.useToast)();
+          notification('API key has been verified and stored!', {
+            timeout: 2000
+          });
+          getApiKeyMasked();
+        }
+        if (res == false || res == 'false') {
+          license.getActivatedStatus();
+          var _notification = (0,vue_toastification__WEBPACK_IMPORTED_MODULE_2__.useToast)();
+          _notification.error('API key is not valid', {
+            timeout: 2000
+          });
         }
       })["catch"](function (err) {
         return console.log(err);
@@ -17341,20 +17357,51 @@ __webpack_require__.r(__webpack_exports__);
         if (res == true || res == 'true') {
           key.value = '';
           license.getActivatedStatus();
-          //TODO:Add notification
+          var notification = (0,vue_toastification__WEBPACK_IMPORTED_MODULE_2__.useToast)();
+          notification('API key has been removed!', {
+            timeout: 2000
+          });
         }
       })["catch"](function (err) {
         return console.log(err);
       });
     };
+
+    /** get masked key */
+    var getApiKeyMasked = function getApiKeyMasked() {
+      var data = new FormData();
+      data.append('respacio_houzez_nonce', respacio_houzez_nonce);
+      data.append('action', 'getApiKeyMasked');
+      fetch(respacio_houzez_ajax_path, {
+        method: 'POST',
+        body: data
+      }).then(function (res) {
+        return res.json();
+      }).then(function (res) {
+        if (res == false || res == 'false') {
+          key.value = '';
+          return;
+        }
+        key.value = res;
+      })["catch"](function (err) {
+        return console.log(err);
+      });
+    };
+    if (license.isActivated == true) {
+      getApiKeyMasked();
+    }
     var __returned__ = {
       license: license,
       key: key,
       verifyKey: verifyKey,
       removeKey: removeKey,
+      getApiKeyMasked: getApiKeyMasked,
       ref: vue__WEBPACK_IMPORTED_MODULE_0__.ref,
       get useGlobalstateStore() {
         return _stores_globalstate__WEBPACK_IMPORTED_MODULE_1__.useGlobalstateStore;
+      },
+      get useToast() {
+        return vue_toastification__WEBPACK_IMPORTED_MODULE_2__.useToast;
       }
     };
     Object.defineProperty(__returned__, '__isScriptSetup', {

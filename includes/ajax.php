@@ -12,6 +12,7 @@ class ajax{
 		add_action('wp_ajax_checkApiKey',array('RespacioHouzezImport\ajax','checkApiKey'));
 		add_action('wp_ajax_isActivated',array('RespacioHouzezImport\ajax','isActivated'));
 		add_action('wp_ajax_removeKey',array('RespacioHouzezImport\ajax','removeKey'));
+		add_action('wp_ajax_getApiKeyMasked',array('RespacioHouzezImport\ajax','getApiKeyMasked'));
 	}
 
 	public static function exportAndDownload(){
@@ -89,6 +90,31 @@ class ajax{
 		 */
 
 		echo json_encode(boolval(get_option('verify_api')));
+		wp_die();
+
+	}
+
+	/**
+	 * @return string json_ecoded string contain API key
+	 */
+	public static function getApiKeyMasked(){
+		/** checking the nonce*/
+		if(!wp_verify_nonce($_POST['respacio_houzez_nonce'],'respacio_houzez_nonce'))  wp_die();
+		$key = get_option('property_verification_api',false);
+
+		/**
+		 * in case no API key found in option table in database
+		 */
+		if($key === false){
+			echo json_encode(false);
+			wp_die();
+		}
+
+		$key_length = strlen($key);
+		$masking_length = $key_length - 12;
+		$maskedKey = substr($key,0,6). str_repeat("*",$masking_length) . substr($key, -6);
+
+		echo json_encode($maskedKey);
 		wp_die();
 
 	}
