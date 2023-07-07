@@ -29,7 +29,7 @@ license.getActivatedStatus();
     <template v-if="windowStore.activeWindow == 0 ">
       <Status v-on:click="windowStore.changeActiveWindow(1)"/>
       
-      <Cron v-on:click="windowStore.changeActiveWindow(2)"/>
+<!--      <Cron v-on:click="windowStore.changeActiveWindow(2)"/>-->
       <Export v-on:click="windowStore.changeActiveWindow(3)"/>
       <Wpml/>
       <Setting v-on:click="windowStore.changeActiveWindow(4)"/>

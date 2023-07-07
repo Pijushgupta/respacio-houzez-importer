@@ -3,6 +3,16 @@
 namespace RespacioHouzezImport;
 
 class post {
+	/**
+	 * This to register image attachment as post type of attachment
+	 * @param $postId
+	 * @param $uploaded_url
+	 * @param $file_name
+	 * @param $flag
+	 * @param $extention
+	 *
+	 * @return int|\WP_Error
+	 */
 	public static function respacio_insert_post_data($postId,$uploaded_url,$file_name,$flag,$extention){
 
 		global $wpdb;
@@ -21,16 +31,7 @@ class post {
 		);
 
 		$post_attachment_id = wp_insert_post($post_array);
-		/*
-		$table_name = $wpdb->prefix . "postmeta";
-		$insert_thumb = array(
-			"post_id"	=>	$postId,
-			"meta_key"	=>	"_thumbnail_id",
-			"meta_value"	=>	$post_attachment_id
-		);
 
-		$wpdb->insert($table_name,$insert_thumb);
-		*/
 		$table_name = $wpdb->prefix . "postmeta";
 		$post_img = $wpdb->get_results("SELECT meta_id,meta_value FROM $table_name WHERE (post_id = ".$postId." AND meta_key = '_thumbnail_id')");
 

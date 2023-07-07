@@ -17436,20 +17436,16 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     onClick: _cache[0] || (_cache[0] = function ($event) {
       return $setup.windowStore.changeActiveWindow(1);
     })
-  }), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)($setup["Cron"], {
+  }), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("      <Cron v-on:click=\"windowStore.changeActiveWindow(2)\"/>"), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)($setup["Export"], {
     onClick: _cache[1] || (_cache[1] = function ($event) {
-      return $setup.windowStore.changeActiveWindow(2);
-    })
-  }), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)($setup["Export"], {
-    onClick: _cache[2] || (_cache[2] = function ($event) {
       return $setup.windowStore.changeActiveWindow(3);
     })
   }), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)($setup["Wpml"]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)($setup["Setting"], {
-    onClick: _cache[3] || (_cache[3] = function ($event) {
+    onClick: _cache[2] || (_cache[2] = function ($event) {
       return $setup.windowStore.changeActiveWindow(4);
     })
   }), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)($setup["Guide"], {
-    onClick: _cache[4] || (_cache[4] = function ($event) {
+    onClick: _cache[3] || (_cache[3] = function ($event) {
       return $setup.windowStore.changeActiveWindow(5);
     })
   })], 64 /* STABLE_FRAGMENT */)) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), $setup.windowStore.activeWindow == 1 ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)($setup["Statuspage"], {
