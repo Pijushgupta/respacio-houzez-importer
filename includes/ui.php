@@ -1,54 +1,63 @@
-<?php 
+<?php
+
 namespace RespacioHouzezImport;
-if(!defined('ABSPATH')) exit;
 
-class ui{
-    public static function activate(){
-        if(!function_exists('wp_get_current_user')) { include(ABSPATH . "wp-includes/pluggable.php"); }
+if (!defined('ABSPATH')) exit;
 
-        if (current_user_can('manage_options')) {
-            /**
-             * calling addMenu Method 
-             */
-			if(MODE_OLD === true){
+class ui
+{
+	public static function activate()
+	{
+		if (!function_exists('wp_get_current_user')) {
+			include(ABSPATH . "wp-includes/pluggable.php");
+		}
+
+		if (current_user_can('manage_options')) {
+			/**
+			 * calling addMenu Method 
+			 */
+			if (MODE_OLD === true) {
 				add_action('admin_menu', array('RespacioHouzezImport\ui', 'addMenu'));
 				add_action('admin_enqueue_scripts', array('RespacioHouzezImport\ui', 'addAssets'));
-			}else{
+			} else {
 				add_action('admin_menu', array('\RespacioHouzezImport\ui', 'newMenu'));
 				add_action('admin_enqueue_scripts', array('\RespacioHouzezImport\ui', 'newAssets'));
 			}
 			//
 
-            /**
-             * calling addAssets method.
-             */
-           //
+			/**
+			 * calling addAssets method.
+			 */
+			//
 
 		}
-    }
+	}
 
-    /**
-     * Adding menu items
-     *
-     * @return void
-     */
-    public static function addMenu(){
-        add_menu_page(__(RHIMO_PLUGIN_NAME), __(RHIMO_PLUGIN_NAME), 'manage_options', 'respacio_houzez_import', array('\RespacioHouzezImport\license','verify'), '', 6);
-		add_submenu_page('respacio_houzez_import','Import','Import','manage_options', 'respacio_houzez_import', array('\RespacioHouzezImport\license','verify'));
-		add_submenu_page('respacio_houzez_import','Export','Export','manage_options', 'respacio_houzez_export', array('\RespacioHouzezImport\export','init'));
-    }
+	/**
+	 * Adding menu items
+	 *
+	 * @return void
+	 */
+	public static function addMenu()
+	{
+		add_menu_page(__(RHIMO_PLUGIN_NAME), __(RHIMO_PLUGIN_NAME), 'manage_options', 'respacio_houzez_import', array('\RespacioHouzezImport\license', 'verify'), '', 6);
+		add_submenu_page('respacio_houzez_import', 'Import', 'Import', 'manage_options', 'respacio_houzez_import', array('\RespacioHouzezImport\license', 'verify'));
+		add_submenu_page('respacio_houzez_import', 'Export', 'Export', 'manage_options', 'respacio_houzez_export', array('\RespacioHouzezImport\export', 'init'));
+	}
 
-    /**
-     * adding assets for plugin backend 
-     *
-     * @return void
-     */
-    public static function addAssets(){
-        wp_enqueue_style( 'custom-style', plugins_url( '/css/style.css', __FILE__ ) );
-		wp_enqueue_script('my-script', plugins_url('/js/my-script.js',__FILE__ ));
-    }
+	/**
+	 * adding assets for plugin backend 
+	 *
+	 * @return void
+	 */
+	public static function addAssets()
+	{
+		wp_enqueue_style('custom-style', plugins_url('/css/style.css', __FILE__));
+		wp_enqueue_script('my-script', plugins_url('/js/my-script.js', __FILE__));
+	}
 
-	public static function newMenu(){
+	public static function newMenu()
+	{
 		add_menu_page(
 			__(RHIMO_PLUGIN_NAME),
 			__('Respacio Houzez'),
@@ -59,7 +68,8 @@ class ui{
 		);
 	}
 
-	public static function render(){
+	public static function render()
+	{
 		$url = admin_url('admin-ajax.php');
 		$respacio_nonce = wp_create_nonce('respacio_houzez_nonce');
 		$dashboardLang = explode('_', get_locale())[0];
@@ -67,10 +77,13 @@ class ui{
         var respacio_houzez_ajax_path = "%1$s";
         var respacio_houzez_nonce = "%2$s"; 
         var adminLocale = "%3$s";
-        </script><div id="respacio_houzez_root"></div>',$url, $respacio_nonce, $dashboardLang);
+        </script><div id="respacio_houzez_root"></div>', $url, $respacio_nonce, $dashboardLang);
 	}
-	public static function newAssets(){
-		wp_enqueue_style( 'custom-style', plugins_url( '/dist/app.css', __FILE__ ) );
-		wp_enqueue_script('my-script', plugins_url('/dist/app.js',__FILE__ ),array(),false,true);
+	public static function newAssets($hook)
+	{
+		if ($hook != 'toplevel_page_' . 'respacio_houzez_import') return;
+
+		wp_enqueue_style('custom-style', plugins_url('/dist/app.css', __FILE__));
+		wp_enqueue_script('my-script', plugins_url('/dist/app.js', __FILE__), array(), false, true);
 	}
 }
