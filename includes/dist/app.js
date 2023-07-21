@@ -17158,10 +17158,22 @@ __webpack_require__.r(__webpack_exports__);
       if (selectedFileType.value === 'File Type') return;
       if (isDownloadActive.value !== false) return;
       isDownloadActive.value = true;
-      var notificaiotn = (0,vue_toastification__WEBPACK_IMPORTED_MODULE_0__.useToast)();
-      notificaiotn("Creating the file please wait, download will start automatically!", {
-        timeout: 4000
-      });
+
+      // checking if the user wants to download the xml 
+      if (selectedFileType.value == "1") {
+        var notificaiotn = (0,vue_toastification__WEBPACK_IMPORTED_MODULE_0__.useToast)();
+        notificaiotn("Creating the file please wait", {
+          timeout: 4000
+        });
+      }
+
+      // checking if the user wants to download the excel
+      if (selectedFileType.value == "2") {
+        var _notificaiotn = (0,vue_toastification__WEBPACK_IMPORTED_MODULE_0__.useToast)();
+        _notificaiotn("Creating the file please wait, download will start automatically!", {
+          timeout: 4000
+        });
+      }
       prepareDownload();
     }
 
@@ -17181,14 +17193,15 @@ __webpack_require__.r(__webpack_exports__);
         return res.json();
       }).then(function (res) {
         if (res == null) return;
-        var link = document.createElement('a');
-        link.href = res;
-        if (selectedFileType.value == 2) {
+        if (selectedFileType.value == "2") {
+          var link = document.createElement('a');
+          link.href = res;
           link.download = 'export.xls';
+          link.click();
         } else {
-          link.download = 'export.xml';
+          console.log(res);
         }
-        link.click();
+
         /**
          * removing ui selection lock
          * @type {boolean}

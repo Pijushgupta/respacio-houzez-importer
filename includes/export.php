@@ -8,7 +8,7 @@ use \PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 class export {
 	public static function init(){
 		\RespacioHouzezImport\export::downloadModal();
-        \RespacioHouzezImport\export::handleSubmit();
+        // \RespacioHouzezImport\export::handleSubmit();
         \RespacioHouzezImport\export::exportSelectionUi();
 
 	}
@@ -49,7 +49,7 @@ class export {
 		//echo '<pre> ';  print_r($properties); die;
 		if(isset($properties) && !empty($properties)){
 
-			$doc = new DOMDocument();
+			$doc = new \DOMDocument();
 			$doc->formatOutput = true;
 
 			$mainTag = $doc->createElement("data");
@@ -375,14 +375,7 @@ class export {
 			$xml = $doc->save($finalFilePath);
 
             return $finalFileSrc;
-//			if($xml !== false){
-//				?>
-<!--                <script>respacio_showModal('--><?php //echo $finalFileSrc;?>//');</script>
-//				<?php
-//			} else {
-//				echo $xml ;
-//			}
-           // return $xml;
+
 		}
 		/* GET PROPERTIES FROM wp_posts TABLE END */
 
