@@ -17192,14 +17192,22 @@ __webpack_require__.r(__webpack_exports__);
       }).then(function (res) {
         return res.json();
       }).then(function (res) {
-        if (res == null) return;
+        if (res == null) {
+          var notificaiotn = (0,vue_toastification__WEBPACK_IMPORTED_MODULE_0__.useToast)();
+          notificaiotn.error('no data', {
+            timeout: 4000
+          });
+          isDownloadActive.value = false;
+          return;
+        }
         if (selectedFileType.value == "2") {
           var link = document.createElement('a');
           link.href = res;
           link.download = 'export.xls';
           link.click();
         } else {
-          console.log(res);
+          var _notificaiotn2 = (0,vue_toastification__WEBPACK_IMPORTED_MODULE_0__.useToast)();
+          _notificaiotn2(res);
         }
 
         /**

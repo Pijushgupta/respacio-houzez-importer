@@ -373,7 +373,9 @@ class export {
 			// SAVE XML
 			$doc->saveXML();
 			$xml = $doc->save($finalFilePath);
-
+			if(empty($xml)){
+				$finalFilePath = false;
+			}
             return $finalFileSrc;
 
 		}
