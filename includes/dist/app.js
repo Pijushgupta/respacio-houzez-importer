@@ -17208,6 +17208,7 @@ __webpack_require__.r(__webpack_exports__);
           link.download = 'export.xls';
           link.click();
         } else {
+          console.log(res);
           xmllink.value = res;
           open.value = true;
         }
