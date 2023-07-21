@@ -44,3 +44,9 @@ add_action('plugin_loaded', function () {
 
 	include('includes/admin-page.php');
 });
+
+
+/**
+ * removing keys
+ */
+register_uninstall_hook(__FILE__,array('RespacioHouzezImport\license','removeExistingKey'));

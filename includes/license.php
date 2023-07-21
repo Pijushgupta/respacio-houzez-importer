@@ -119,6 +119,7 @@ class license
 		return false;
 
 	}
+     
     public static function removeExistingKey(){
         delete_option( 'property_verification_api' );
         delete_option( 'verify_api' );
