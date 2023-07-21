@@ -5,3 +5,30 @@
 #wpcontent{
     padding-left: 0;
 }
+ /* width */
+ ::-webkit-scrollbar {
+	width: 3px;
+	height: 3px;
+  }
+  
+  ::-webkit-scrollbar-track {
+	background: transparent; 
+	
+  }
+  
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+	background-color: rgb(80, 80, 80);
+	border-radius:4px;
+  }
+  .row-heading{
+	writing-mode: unset;
+  }
+  @media (min-width: 768px) {
+	.row-heading{
+		writing-mode: vertical-lr;
+	  }
+  }
+  .no-scroll{
+	@apply h-screen overflow-hidden;
+  }
