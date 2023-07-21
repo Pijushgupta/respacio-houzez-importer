@@ -17151,6 +17151,7 @@ __webpack_require__.r(__webpack_exports__);
     var isDownloadActive = (0,vue__WEBPACK_IMPORTED_MODULE_1__.ref)(false);
     var selectedFileType = (0,vue__WEBPACK_IMPORTED_MODULE_1__.ref)('File Type');
     var xmllink = (0,vue__WEBPACK_IMPORTED_MODULE_1__.ref)('');
+    var open = (0,vue__WEBPACK_IMPORTED_MODULE_1__.ref)(false);
     /**
      * showing the notification
      * and starting download process
@@ -17208,6 +17209,7 @@ __webpack_require__.r(__webpack_exports__);
           link.click();
         } else {
           xmllink.value = res;
+          open.value = true;
         }
 
         /**
@@ -17219,7 +17221,6 @@ __webpack_require__.r(__webpack_exports__);
         return console.log(err);
       });
     }
-    var open = (0,vue__WEBPACK_IMPORTED_MODULE_1__.ref)(false);
     function copyToClipBoard() {
       navigator.clipboard.writeText(xmllink.value).then(function () {
         alert("Text copied to clipboard!");
@@ -17231,9 +17232,9 @@ __webpack_require__.r(__webpack_exports__);
       isDownloadActive: isDownloadActive,
       selectedFileType: selectedFileType,
       xmllink: xmllink,
+      open: open,
       showDownloadNotification: showDownloadNotification,
       prepareDownload: prepareDownload,
-      open: open,
       copyToClipBoard: copyToClipBoard,
       get useToast() {
         return vue_toastification__WEBPACK_IMPORTED_MODULE_0__.useToast;
@@ -17617,14 +17618,10 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     "onUpdate:modelValue": _cache[0] || (_cache[0] = function ($event) {
       return $setup.selectedFileType = $event;
     })
-  }, _hoisted_7, 544 /* HYDRATE_EVENTS, NEED_PATCH */), [[vue__WEBPACK_IMPORTED_MODULE_0__.vModelSelect, $setup.selectedFileType]])])])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
-    onClick: _cache[1] || (_cache[1] = function ($event) {
-      return $setup.open = true;
-    })
-  }, "Open Modal"), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" modal - Teleport to appent the modal before body ends "), ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Teleport, {
+  }, _hoisted_7, 544 /* HYDRATE_EVENTS, NEED_PATCH */), [[vue__WEBPACK_IMPORTED_MODULE_0__.vModelSelect, $setup.selectedFileType]])])])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" modal - Teleport to appent the modal before body ends "), ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Teleport, {
     to: "body"
   }, [$setup.open ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_8, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_9, [((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("svg", {
-    onClick: _cache[2] || (_cache[2] = function ($event) {
+    onClick: _cache[1] || (_cache[1] = function ($event) {
       return $setup.open = false;
     }),
     xmlns: "http://www.w3.org/2000/svg",
