@@ -17208,9 +17208,9 @@ __webpack_require__.r(__webpack_exports__);
           link.download = 'export.xls';
           link.click();
         } else {
-          console.log(res);
           xmllink.value = res;
           open.value = true;
+          console.log(xmllink.value);
         }
 
         /**
@@ -17631,7 +17631,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     "stroke-width": "1.5",
     stroke: "currentColor",
     "class": "w-6 h-6 absolute -right-2 -top-2 bg-white rounded-full cursor-pointer shadow-lg"
-  }, _hoisted_11)), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_12, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("p", _hoisted_13, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($setup.xmllink.value), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", {
+  }, _hoisted_11)), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_12, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("p", _hoisted_13, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($setup.xmllink), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", {
     "class": "border p-[8px] rounded cursor-pointer",
     onClick: $setup.copyToClipBoard
   }, _hoisted_15)])])])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)])), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" modal ends  ")], 64 /* STABLE_FRAGMENT */);
