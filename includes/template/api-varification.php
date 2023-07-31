@@ -8,19 +8,19 @@ if(array_key_exists('property_verification_api',$_POST) && $_POST['property_veri
 	$property_verification_api = sanitize_text_field($_POST['property_verification_api']);
 }
 
-$message_btn = "";
-if(!isset($error)) $error = "";
-if(!isset($message)) $message = "";
+$message_btn = '';
+if(!isset($error)) $error = '';
+if(!isset($message)) $message = '';
 
 global $wpdb, $prop_web_name,$prop_options, $prop_messages;
 $sa_apikey_verify = get_option( 'verify_api');
 $sa_apikey = get_option( 'property_verification_api');
 $sync_type = get_option( 'sync_type');
-$message1 = "";
+$message1 = '';
 
 if(array_key_exists('property_sync_property',$_POST) && sanitize_text_field($_POST['property_sync_property'])){
 	$method = 'POST';
-	$data['lang_code'] = "en";
+	$data['lang_code'] = 'en';
     //TODO: where is the defination ? remove it ?
 	$property_sync = property_syncing_cb();
 
@@ -30,7 +30,7 @@ if(array_key_exists('property_sync_property',$_POST) && sanitize_text_field($_PO
 		$ws_name = $prop_web_name['prop_sync_website'];
 		$result = sa_verify_api_curl($ws_name,$data,$method);
 		$finalres = json_decode($result);
-		if(!empty($finalres) && $finalres->status == "success"){
+		if(!empty($finalres) && $finalres->status == 'success' ){
 			$wpdb->update('properties',
 			array(
 			    'property_export_success' => 1,
