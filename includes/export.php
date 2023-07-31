@@ -1,15 +1,20 @@
 <?php
 
-namespace RespacioHouzezImport;
-if(!defined('ABSPATH')) exit();
-use \PhpOffice\PhpSpreadsheet\Spreadsheet;
-use \PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+/** @noinspection PhpMissingStrictTypesDeclarationInspection */
 
+namespace RespacioHouzezImport;
+use DOMDocument;
+
+if(!defined('ABSPATH')) exit();
+
+/**
+ * to data as xml or xls
+ */
 class export {
-	public static function init(){
-		\RespacioHouzezImport\export::downloadModal();
-        // \RespacioHouzezImport\export::handleSubmit();
-        \RespacioHouzezImport\export::exportSelectionUi();
+	/** @noinspection PhpEnforceDocCommentInspection */
+	public static function init() {
+		export::downloadModal();
+        export::exportSelectionUi();
 
 	}
 
@@ -34,64 +39,68 @@ class export {
 		</div>
 	<?php }
 
+	/** @noinspection PhpComplexFunctionInspection
+	 * @noinspection PhpFunctionCyclomaticComplexityInspection
+	 */
 	public static function respacio_export_XML($finalFilePath,$finalFileSrc){
 
 		global $wpdb;
 
 		/* GET PROPERTIES FROM wp_posts TABLE START */
-		$args = array(
+		$args = [
 			'post_type'   => 'property',
 			'numberposts' => -1,
 			'post_status' => 'any'
-		);
+		];
 
 		$properties = get_posts( $args );
 		//echo '<pre> ';  print_r($properties); die;
-		if(isset($properties) && !empty($properties)){
+		if( !empty($properties) ){
 
-			$doc = new \DOMDocument();
+			$doc = new DOMDocument();
 			$doc->formatOutput = true;
 
-			$mainTag = $doc->createElement("data");
+			$mainTag = $doc->createElement( 'data' );
 			$doc->appendChild( $mainTag );
 
 			// APPEND PROPERTY DATA TO XML START //
 			foreach($properties as $property){
 
 				//echo '<pre> ';  print_r($property); die;
-				$favPropImgs = $favAttachments = array();
+				$favPropImgs = $favAttachments = [];
 
 				$property_id = $property->ID ;
+				/** @noinspection PhpRedundantOptionalArgumentInspection */
 				$propertyMetaDatas = get_post_meta($property_id,false,false);
 				//echo '<pre> ';  print_r($propertyMetaDatas); die;
 
-				$propTag = $doc->createElement("Property");
+				$propTag = $doc->createElement( 'Property' );
 
-				$post_id = $doc->createElement("post_id");
+				$post_id = $doc->createElement( 'post_id' );
 				$post_id->appendChild($doc->createTextNode($property_id));
 				$propTag->appendChild( $post_id );
 
-				$property_title = $doc->createElement("post_title");
+				$property_title = $doc->createElement( 'post_title' );
 				$property_title->appendChild($doc->createTextNode($property->post_title));
 				$propTag->appendChild( $property_title );
 
-				$property_content = $doc->createElement("post_content");
+				$property_content = $doc->createElement( 'post_content' );
 				$property_content->appendChild($doc->createTextNode($property->post_content));
 				$propTag->appendChild( $property_content );
 
-				$post_name = $doc->createElement("post_name");
+				$post_name = $doc->createElement( 'post_name' );
 				$post_name->appendChild($doc->createTextNode($property->post_name));
 				$propTag->appendChild( $post_name );
 
-				$property_modified = $doc->createElement("post_modified");
+				$property_modified = $doc->createElement( 'post_modified' );
 				$property_modified->appendChild($doc->createTextNode($property->post_modified));
 				$propTag->appendChild( $property_modified );
 
-				$property_excerpt = $doc->createElement("post_excerpt");
+				$property_excerpt = $doc->createElement( 'post_excerpt' );
 				$property_excerpt->appendChild($doc->createTextNode($property->post_excerpt));
 				$propTag->appendChild( $property_excerpt );
 				$is_private = 0;
-				$post_status = $doc->createElement("post_status");
+				$post_status = $doc->createElement( 'post_status' );
 				$post_status1 = $property->post_status ;
 				if($post_status1 == 'publish'){
 					$post_status1 = 'Active' ;
@@ -106,12 +115,12 @@ class export {
 				$post_status->appendChild($doc->createTextNode($post_status1));
 				$propTag->appendChild( $post_status );
 
-				$property_private = $doc->createElement("is_private");
+				$property_private = $doc->createElement( 'is_private' );
 				$property_private->appendChild($doc->createTextNode($is_private));
 				$propTag->appendChild( $property_private );
 
 				//GET META DATA START
-				if(isset($propertyMetaDatas) && !empty($propertyMetaDatas)){
+				if( !empty($propertyMetaDatas) ){
 					foreach($propertyMetaDatas as $propertyMetaKey=>$propertyMetaVal){
 
 						if($propertyMetaKey != 'fave_attachments' && $propertyMetaKey != 'fave_currency_info' && $propertyMetaKey != 'floor_plans' && $propertyMetaKey != 'fave_property_images' && !empty($propertyMetaVal)){
@@ -121,7 +130,7 @@ class export {
 						if($propertyMetaKey == '_thumbnail_id' || $propertyMetaKey == 'fave_video_image' || $propertyMetaKey == 'fave_prop_slider_image'){
 
 							$postMetaVal = get_the_guid($propertyMetaVal[0]) ;
-							if(isset($postMetaVal) && !empty($postMetaVal)){
+							if( !empty($postMetaVal) ){
 								$postMetaVal .= '?image_id='.$propertyMetaVal[0] ;
 							}
 						} elseif($propertyMetaKey == 'fave_agents'){
@@ -129,27 +138,27 @@ class export {
 							$postMetaVal = '' ;
 							$agnetId = $propertyMetaVal[0] ;
 
-							if(isset($agnetId) && !empty($agnetId)){
+							if( !empty($agnetId) ){
 
 								//GET AGENT NAME
 								$postMetaVal .= get_the_title($agnetId);
 
 								// GET AGENT EMAIL ID
 								$agentEmail = get_post_meta($agnetId,'fave_agent_email',true);
-								if(isset($agentEmail) && !empty($agentEmail)){
-									$postMetaVal .= " | ".$agentEmail;
+								if( !empty($agentEmail) ){
+									$postMetaVal .= ' | ' . $agentEmail;
 								}
 
 								// GET AGENT WORK NUMBER
 								$agentOfcNo = get_post_meta($agnetId,'fave_agent_office_num',true);
-								if(isset($agentOfcNo) && !empty($agentOfcNo)){
-									$postMetaVal .= " | ".$agentOfcNo;
+								if( !empty($agentOfcNo) ){
+									$postMetaVal .= ' | ' . $agentOfcNo;
 								}
 
 								// GET IMAGE URL
 								$agentThumbId = get_post_meta($agnetId,'_thumbnail_id',true);
-								if(isset($agentThumbId) && !empty($agentThumbId)){
-									$postMetaVal .= " | ".get_the_guid($agentThumbId) ;
+								if( !empty($agentThumbId) ){
+									$postMetaVal .= ' | ' . get_the_guid($agentThumbId) ;
 								}
 
 							}
@@ -163,7 +172,7 @@ class export {
 							if(!empty($propertyMetaVal[0])){
 
 								$unSerializeData = array_keys(unserialize($propertyMetaVal[0]));
-								if(isset($unSerializeData) && !empty($unSerializeData)){
+								if( !empty($unSerializeData) ){
 
 									$propertyCreateDate = $doc->createElement('property_create_date');
 									$propertyCreateDate->appendChild($doc->createTextNode($unSerializeData[0]));
@@ -181,19 +190,19 @@ class export {
 
 							$floorPlanData = unserialize($propertyMetaVal[0]);
 							//if($property_id == '8408'){ echo '<pre>' ; print_r($floorPlanData) ;  die; }
-							if(isset($floorPlanData) && !empty($floorPlanData)){
+							if( !empty($floorPlanData) ){
 
-								$floorPlanWrapTag = $doc->createElement("floorplans");
+								$floorPlanWrapTag = $doc->createElement( 'floorplans' );
 								foreach($floorPlanData as $fpData){
 
-									if(isset($fpData['fave_plan_image']) && !empty($fpData['fave_plan_image'])){
+									if( !empty($fpData['fave_plan_image']) ){
 										$fpDataImgId = $fpData['fave_plan_image'] ;
 										$floorPlanID = $wpdb->get_var( $wpdb->prepare( "SELECT ID FROM $wpdb->posts WHERE guid=%s", $fpDataImgId ) );
-										if(isset($floorPlanID) && !empty($floorPlanID)){
+										if( !empty($floorPlanID) ){
 											$fpDataImgId .= '?image_id='.$floorPlanID ;
 										}
 
-										$fpData1 = $doc->createElement("image");
+										$fpData1 = $doc->createElement( 'image' );
 										$fpData1->appendChild($doc->createTextNode($fpDataImgId));
 										$floorPlanWrapTag->appendChild($fpData1);
 									}
@@ -206,13 +215,13 @@ class export {
 
 							$addiFeaturesData = unserialize($propertyMetaVal[0]);
 							//echo '<pre>' ; print_r($addiFeaturesData); die;
-							if(isset($addiFeaturesData) && !empty($addiFeaturesData)){
+							if( !empty($addiFeaturesData) ){
 								$postMetaVal = '' ;
 								foreach($addiFeaturesData as $addFeaData){
 									if(!empty($postMetaVal)){
-										$postMetaVal .= " | ";
+										$postMetaVal .= ' | ';
 									}
-									$postMetaVal .= $addFeaData['fave_additional_feature_title']." : ".$addFeaData['fave_additional_feature_value'] ;
+									$postMetaVal .= $addFeaData['fave_additional_feature_title'] . ' : ' . $addFeaData['fave_additional_feature_value'] ;
 
 								}
 							}
@@ -228,13 +237,9 @@ class export {
 						} else if($propertyMetaKey == 'fave_virtual_tour'){
 
 							$virtualTour = $propertyMetaVal[0];
-							if(isset($virtualTour) && !empty($virtualTour)){
+							if( !empty($virtualTour) ){
 								preg_match('@src="([^"]+)"@' ,$virtualTour,$match);
-								if(isset($match[1])){
-									$postMetaVal = $match[1] ;
-								} else {
-									$postMetaVal = $virtualTour ;
-								}
+								$postMetaVal = isset( $match[1] ) ? $match[1] : $virtualTour;
 							}
 						} else {
 
@@ -243,6 +248,7 @@ class export {
 						}
 
 						if($propertyMetaKey != 'fave_attachments' && $propertyMetaKey != 'fave_currency_info' && $propertyMetaKey != 'floor_plans' && $propertyMetaKey != 'fave_property_images' && !empty($propertyMetaVal)){
+							/** @noinspection PhpUndefinedVariableInspection */
 							$$propertyMetaKey->appendChild($doc->createTextNode($postMetaVal));
 							$propTag->appendChild( $$propertyMetaKey );
 						}
@@ -254,15 +260,15 @@ class export {
 
 				//echo '<pre>'; print_r($favAttachments); die;
 				// PROPERTY IMAGE START
-				if(isset($favPropImgs) && !empty($favPropImgs)){
+				if( !empty($favPropImgs) ){
 
-					$imageWrapTag = $doc->createElement("images");
+					$imageWrapTag = $doc->createElement( 'images' );
 					foreach($favPropImgs as $favPropImg){
 
 						$imgUrl = get_the_guid($favPropImg);
 						$imgUrl .= '?image_id='.$favPropImg ;
 
-						$favPropImg1 = $doc->createElement("image");
+						$favPropImg1 = $doc->createElement( 'image' );
 						$favPropImg1->appendChild($doc->createTextNode($imgUrl));
 						$imageWrapTag->appendChild( $favPropImg1 );
 
@@ -273,15 +279,15 @@ class export {
 				// PROPERTY IMAGE END
 
 				// PROPERTY ATTACHMENT START
-				if(isset($favAttachments) && !empty($favAttachments)){
+				if( !empty($favAttachments) ){
 
-					$attachWrapTag = $doc->createElement("fave_attachments");
+					$attachWrapTag = $doc->createElement( 'fave_attachments' );
 					foreach($favAttachments as $favAttachment){
 
 						$attchUrl = get_the_guid($favAttachment);
 						$attchUrl .= '?image_id='.$favAttachment ;
 
-						$favAttachment1 = $doc->createElement("image");
+						$favAttachment1 = $doc->createElement( 'image' );
 						$favAttachment1->appendChild($doc->createTextNode($attchUrl));
 						$attachWrapTag->appendChild( $favAttachment1 );
 
@@ -292,77 +298,77 @@ class export {
 				// PROPERTY ATTACHMENT END
 
 				$property_type = wp_get_post_terms( $property_id, 'property_type');
-				if(isset($property_type) && !empty($property_type)){
+				if( !empty($property_type) ){
 
 					$property_type_names = implode('| ',wp_list_pluck($property_type,'name'));
-					$propertyType = $doc->createElement("property_type");
+					$propertyType = $doc->createElement( 'property_type' );
 					$propertyType->appendChild($doc->createTextNode($property_type_names));
 					$propTag->appendChild($propertyType);
 
 				}
 
 				$property_status = wp_get_post_terms( $property_id, 'property_status');
-				if(isset($property_status) && !empty($property_status)){
+				if( !empty($property_status) ){
 
 					$property_status_names = implode('| ',wp_list_pluck($property_status,'name'));
-					$propertyStatus = $doc->createElement("property_status");
+					$propertyStatus = $doc->createElement( 'property_status' );
 					$propertyStatus->appendChild($doc->createTextNode($property_status_names));
 					$propTag->appendChild($propertyStatus);
 
 				}
 
 				$property_features = wp_get_post_terms( $property_id, 'property_feature');
-				if(isset($property_features) && !empty($property_features)){
+				if( !empty($property_features) ){
 
 					$property_features_names = implode('| ',wp_list_pluck($property_features,'name'));
-					$propertyFeature = $doc->createElement("property_feature");
+					$propertyFeature = $doc->createElement( 'property_feature' );
 					$propertyFeature->appendChild($doc->createTextNode($property_features_names));
 					$propTag->appendChild( $propertyFeature );
 
 				}
 
 				$property_labels = wp_get_post_terms( $property_id, 'property_label');
-				if(isset($property_labels) && !empty($property_labels)){
+				if( !empty($property_labels) ){
 
 					$property_label_names = implode('| ',wp_list_pluck($property_labels,'name'));
-					$propertyLabel = $doc->createElement("property_label");
+					$propertyLabel = $doc->createElement( 'property_label' );
 					$propertyLabel->appendChild($doc->createTextNode($property_label_names));
 					$propTag->appendChild( $propertyLabel );
 
 				}
 
 				$property_city = wp_get_post_terms( $property_id, 'property_city');
-				if(isset($property_city) && !empty($property_city)){
+				if( !empty($property_city) ){
 
 					$property_city_names = implode('| ',wp_list_pluck($property_city,'name'));
-					$propertyCity = $doc->createElement("property_city");
+					$propertyCity = $doc->createElement( 'property_city' );
 					$propertyCity->appendChild($doc->createTextNode($property_city_names));
 					$propTag->appendChild( $propertyCity );
 
 				}
 
 				$property_state = wp_get_post_terms( $property_id, 'property_state');
-				if(isset($property_state) && !empty($property_state)){
+				if( !empty($property_state) ){
 
 					$property_state_names = implode('| ',wp_list_pluck($property_state,'name'));
-					$propertyState = $doc->createElement("property_state");
+					$propertyState = $doc->createElement( 'property_state' );
 					$propertyState->appendChild($doc->createTextNode($property_state_names));
 					$propTag->appendChild( $propertyState );
 
 				}
 
 				$property_area = wp_get_post_terms( $property_id, 'property_area');
-				if(isset($property_area) && !empty($property_area)){
+				if( !empty($property_area) ){
 
 					$property_area_names = implode('| ',wp_list_pluck($property_area,'name'));
-					$propertyArea = $doc->createElement("property_area");
+					$propertyArea = $doc->createElement( 'property_area' );
 					$propertyArea->appendChild($doc->createTextNode($property_area_names));
 					$propTag->appendChild( $propertyArea );
 
 				}
 
-				$currencyInfo = $doc->createElement("fave_currency_info");
-				$currencyInfo->appendChild($doc->createTextNode("€"));
+				$currencyInfo = $doc->createElement( 'fave_currency_info' );
+				$currencyInfo->appendChild($doc->createTextNode( '€' ));
 				$propTag->appendChild( $currencyInfo );
 
 				$mainTag->appendChild( $propTag );
@@ -384,27 +390,91 @@ class export {
 	}
 
 
+	/** @noinspection PhpComplexFunctionInspection
+	 * @noinspection PhpFunctionCyclomaticComplexityInspection
+	 */
 	public static function respacio_export_XLS($finalFilePath,$finalFileSrc){
 		/**
 		 * getting the posts data for exportation
 		 */
-		$args = array(
+		$args = [
 			'post_type'   => 'property',
 			'numberposts' => -1,
 			'post_status' => 'any'
-		);
+		];
 		$properties = get_posts( $args );
 		/**
 		 * end
 		 */
 
 		header("Content-Disposition: attachment; filename=\"$finalFilePath\"");
-		header("Content-Type: application/vnd.ms-excel");
-		header("Pragma: no-cache");
-		header("Expires: 0");
+		header( 'Content-Type: application/vnd.ms-excel' );
+		header( 'Pragma: no-cache' );
+		header( 'Expires: 0' );
 
 
-		$headings[] = array("post_id","post_title","post_content","post_modified","slide_template","_thumbnail_id","fave_property_size","fave_property_size_prefix","fave_property_bedrooms","fave_property_bathrooms","fave_property_garage","fave_property_garage_size","fave_property_year","fave_property_id","fave_property_price","fave_property_price_postfix","fave_property_map","fave_property_map_address","fave_property_location","fave_property_country","fave_agents","fave_additional_features_enable","additional_features","fave_floor_plans_enable","floor_plans","fave_featured","fave_property_address","fave_property_zip","fave_video_url","fave_payment_status","fave_property_map_street_view","_dp_original","fave_property_sec_price","houzez_total_property_views","fave_multiunit_plans_enable","property_create_date","property_modified_date","houzez_recently_viewed","houzez_geolocation_lat","houzez_geolocation_long","fave_virtual_tour","fave_single_top_area","fave_single_content_area","fave_agent_display_option","fave_property_agency","_edit_lock","_edit_last","fave_currency_info","houzez_manual_expire","_houzez_expiration_date_status","fave_video_image","fave_attachments","images","property_type","property_status","property_feature","property_label","property_city","property_state","post_status");
+		$headings[] = [
+			'post_id',
+			'post_title',
+			'post_content',
+			'post_modified',
+			'slide_template',
+			'_thumbnail_id',
+			'fave_property_size',
+			'fave_property_size_prefix',
+			'fave_property_bedrooms',
+			'fave_property_bathrooms',
+			'fave_property_garage',
+			'fave_property_garage_size',
+			'fave_property_year',
+			'fave_property_id',
+			'fave_property_price',
+			'fave_property_price_postfix',
+			'fave_property_map',
+			'fave_property_map_address',
+			'fave_property_location',
+			'fave_property_country',
+			'fave_agents',
+			'fave_additional_features_enable',
+			'additional_features',
+			'fave_floor_plans_enable',
+			'floor_plans',
+			'fave_featured',
+			'fave_property_address',
+			'fave_property_zip',
+			'fave_video_url',
+			'fave_payment_status',
+			'fave_property_map_street_view',
+			'_dp_original',
+			'fave_property_sec_price',
+			'houzez_total_property_views',
+			'fave_multiunit_plans_enable',
+			'property_create_date',
+			'property_modified_date',
+			'houzez_recently_viewed',
+			'houzez_geolocation_lat',
+			'houzez_geolocation_long',
+			'fave_virtual_tour',
+			'fave_single_top_area',
+			'fave_single_content_area',
+			'fave_agent_display_option',
+			'fave_property_agency',
+			'_edit_lock',
+			'_edit_last',
+			'fave_currency_info',
+			'houzez_manual_expire',
+			'_houzez_expiration_date_status',
+			'fave_video_image',
+			'fave_attachments',
+			'images',
+			'property_type',
+			'property_status',
+			'property_feature',
+			'property_label',
+			'property_city',
+			'property_state',
+			'post_status'
+		];
 
 		$out = fopen($finalFilePath, 'w');
 
@@ -416,16 +486,17 @@ class export {
 		foreach($properties as $property) {
 
 			$propertyId = $property->ID;
+			/** @noinspection PhpRedundantOptionalArgumentInspection */
 			$propertyMetaDatas = get_post_meta($propertyId,false,false);
 
-			$favPropImgs = $favAttachments = array();
+			$favPropImgs = $favAttachments = [];
 
 			$propertyTitle = $propertyContent = $propertyModified = $slide_template = $_thumbnail_id = $fave_property_size = $fave_property_size_prefix = $fave_property_bedrooms = $fave_property_bathrooms = $fave_property_garage = $fave_property_garage_size = $fave_property_year = $fave_property_id = $fave_property_price = $fave_property_price_postfix = $fave_property_map = $fave_property_map_address = $fave_property_location = $fave_property_country = $fave_agents = $fave_additional_features_enable = $additional_features = $fave_floor_plans_enable = $floor_plans = $fave_featured = $fave_property_address = $fave_property_zip = $fave_video_url = $fave_payment_status = $fave_property_map_street_view = $_dp_original = $fave_property_sec_price = $houzez_total_property_views = $fave_multiunit_plans_enable = $propertyCreateDate = $propertyModifiedDate = $houzez_recently_viewed = $houzez_geolocation_lat = $houzez_geolocation_long = $fave_virtual_tour = $fave_single_top_area = $fave_single_content_area = $fave_agent_display_option = $fave_property_agency = $_edit_lock = $_edit_last = $fave_currency_info = $houzez_manual_expire = $_houzez_expiration_date_status = $fave_property_images = $fave_video_image = $favAtta = $images = $property_type = $property_status = $property_feature = $property_label = $property_city = $property_state = $post_status = '' ;
 
 			$propertyTitle = $property->post_title;
 			$propertyContent = $property->post_content;
 			$propertyModified = $property->post_modified;
-			$fave_currency_info = "€" ;
+			$fave_currency_info = '€';
 			$post_status = $property->post_status ;
 			if($post_status == 'publish'){
 				$post_status = 'Active' ;
@@ -433,13 +504,13 @@ class export {
 				$post_status = 'Inactive' ;
 			}
 
-			if(isset($propertyMetaDatas) && !empty($propertyMetaDatas)){
+			if( !empty($propertyMetaDatas) ){
 				foreach($propertyMetaDatas as $propertyMetaKey=>$propertyMetaVal){
 
 					if($propertyMetaKey == '_thumbnail_id' || $propertyMetaKey == 'fave_video_image'){
 
 						$$propertyMetaKey = get_the_guid($propertyMetaVal[0]) ;
-						if(isset($propertyMetaKey) && !empty($propertyMetaKey)){
+						if( !empty($propertyMetaKey) ){
 							$$propertyMetaKey .= '?image_id='.$propertyMetaVal[0] ;
 						}
 
@@ -448,27 +519,27 @@ class export {
 						$$propertyMetaKey = '' ;
 						$agnetId = $propertyMetaVal[0] ;
 
-						if(isset($agnetId) && !empty($agnetId)){
+						if( !empty($agnetId) ){
 
 							//GET AGENT NAME
 							$$propertyMetaKey .= get_the_title($agnetId);
 
 							// GET AGENT EMAIL ID
 							$agentEmail = get_post_meta($agnetId,'fave_agent_email',true);
-							if(isset($agentEmail) && !empty($agentEmail)){
-								$$propertyMetaKey .= " | ".$agentEmail;
+							if( !empty($agentEmail) ){
+								$$propertyMetaKey .= ' | ' . $agentEmail;
 							}
 
 							// GET AGENT WORK NUMBER
 							$agentOfcNo = get_post_meta($agnetId,'fave_agent_office_num',true);
-							if(isset($agentOfcNo) && !empty($agentOfcNo)){
-								$$propertyMetaKey .= " | ".$agentOfcNo;
+							if( !empty($agentOfcNo) ){
+								$$propertyMetaKey .= ' | ' . $agentOfcNo;
 							}
 
 							// GET IMAGE URL
 							$agentThumbId = get_post_meta($agnetId,'_thumbnail_id',true);
-							if(isset($agentThumbId) && !empty($agentThumbId)){
-								$$propertyMetaKey .= " | ".get_the_guid($agentThumbId) ;
+							if( !empty($agentThumbId) ){
+								$$propertyMetaKey .= ' | ' . get_the_guid($agentThumbId) ;
 							}
 
 						}
@@ -483,7 +554,7 @@ class export {
 						if(!empty($propertyMetaVal[0])){
 
 							$unSerializeData = array_keys(unserialize($propertyMetaVal[0]));
-							if(isset($unSerializeData) && !empty($unSerializeData)){
+							if( !empty($unSerializeData) ){
 								$propertyCreateDate = $unSerializeData[0];
 								$propertyModifiedDate = $unSerializeData[1];
 							}
@@ -493,10 +564,10 @@ class export {
 
 						$floorPlanData = unserialize($propertyMetaVal[0]);
 
-						if(isset($floorPlanData) && !empty($floorPlanData)){
+						if( !empty($floorPlanData) ){
 							$fpData1 = '' ;
 							foreach($floorPlanData as $fpData){
-								if(isset($fpData1) && !empty($fpData1)){ $fpData1 .= " | "; }
+								if( !empty($fpData1) ){ $fpData1 .= ' | '; }
 								$fpData1 .= $fpData['fave_plan_image'] ;
 							}
 						}
@@ -504,19 +575,19 @@ class export {
 					}   else if($propertyMetaKey == 'additional_features'){
 
 						$addiFeaturesData = unserialize($propertyMetaVal[0]);
-						if(isset($addiFeaturesData) && !empty($addiFeaturesData)){
+						if( !empty($addiFeaturesData) ){
 							$addiFeatureData = '' ;
 							foreach($addiFeaturesData as $addFeaData){
 								if(!empty($addiFeatureData)){
-									$addiFeatureData .= " | ";
+									$addiFeatureData .= ' | ';
 								}
-								$addiFeatureData .= $addFeaData['fave_additional_feature_title']." : ".$addFeaData['fave_additional_feature_value'] ;
+								$addiFeatureData .= $addFeaData['fave_additional_feature_title'] . ' : ' . $addFeaData['fave_additional_feature_value'] ;
 							}
 						}
 
 					}   else if($propertyMetaKey == 'fave_currency_info'){
 
-						$$propertyMetaKey = "€" ;
+						$$propertyMetaKey = '€';
 
 					}   else if($propertyMetaKey == 'fave_attachments'){
 
@@ -531,15 +602,15 @@ class export {
 				}
 			}
 
-			if(isset($favPropImgs) && !empty($favPropImgs)){
+			if( !empty($favPropImgs) ){
 
 				$images = $imgUrl = '' ;
 				foreach($favPropImgs as $favPropImg){
 
 					$imgUrl = '' ;
 					$imgUrl = get_the_guid($favPropImg);
-					if(isset($imgUrl) && !empty($imgUrl)){ $imgUrl .= '?image_id='.$favPropImg ; }
-					if(isset($images) && !empty($images)){ $images .= ' | ' ;}
+					if( !empty($imgUrl) ){ $imgUrl .= '?image_id=' . $favPropImg ; }
+					if( !empty($images) ){ $images .= ' | ' ;}
 					$images .= $imgUrl ;
 
 				}
@@ -547,15 +618,15 @@ class export {
 
 
 			// PROPERTY ATTACHMENT START
-			if(isset($favAttachments) && !empty($favAttachments)){
+			if( !empty($favAttachments) ){
 
 				$favAtta = $attchUrl = '' ;
 				foreach($favAttachments as $favAttachment){
 
 					$attchUrl = '' ;
 					$attchUrl = get_the_guid($favAttachment);
-					if(isset($attchUrl) && !empty($attchUrl)){ $attchUrl .= '?image_id='.$favAttachment ; }
-					if(isset($favAtta) && !empty($favAtta)){ $favAtta .= ' | ' ;}
+					if( !empty($attchUrl) ){ $attchUrl .= '?image_id=' . $favAttachment ; }
+					if( !empty($favAtta) ){ $favAtta .= ' | ' ;}
 					$favAtta .= $attchUrl ;
 
 				}
@@ -564,19 +635,19 @@ class export {
 			// PROPERTY ATTACHMENT END
 
 			$property_type1 = wp_get_post_terms( $propertyId, 'property_type');
-			if(isset($property_type1) && !empty($property_type1)){
+			if( !empty($property_type1) ){
 				$property_type = implode(' | ',wp_list_pluck($property_type1,'name'));
 			}
 
 			$property_status1 = wp_get_post_terms( $propertyId, 'property_status');
-			if(isset($property_status1) && !empty($property_status1)){
+			if( !empty($property_status1) ){
 
 				$property_status = implode(' | ',wp_list_pluck($property_status1,'name'));
 
 			}
 
 			$property_features1 = wp_get_post_terms( $propertyId, 'property_feature');
-			if(isset($property_features1) && !empty($property_features1)){
+			if( !empty($property_features1) ){
 
 				$property_feature = implode(' | ',wp_list_pluck($property_features1,'name'));
 
@@ -584,27 +655,31 @@ class export {
 
 			$property_labels1 = wp_get_post_terms( $propertyId, 'property_label');
 
-			if(isset($property_labels1) && !empty($property_labels1)){
+			if( !empty($property_labels1) ){
 
 				$property_label = implode(' | ',wp_list_pluck($property_labels1,'name'));
 
 			}
 
 			$property_city1 = wp_get_post_terms( $propertyId, 'property_city');
-			if(isset($property_city1) && !empty($property_city1)){
+			if( !empty($property_city1) ){
 
 				$property_city = implode(' | ',wp_list_pluck($property_city1,'name'));
 
 			}
 
 			$property_state1 = wp_get_post_terms( $propertyId, 'property_state');
-			if(isset($property_state1) && !empty($property_state1)){
+			if( !empty($property_state1) ){
 
 				$property_state = implode(' | ',wp_list_pluck($property_state1,'name'));
 
 			}
 
-			$row = array($propertyId,$propertyTitle,$propertyContent,$propertyModified,$slide_template,$_thumbnail_id,$fave_property_size,$fave_property_size_prefix,$fave_property_bedrooms,$fave_property_bathrooms,$fave_property_garage,$fave_property_garage_size,$fave_property_year,$fave_property_id,$fave_property_price,$fave_property_price_postfix,$fave_property_map,$fave_property_map_address,$fave_property_location,$fave_property_country,$fave_agents,$fave_additional_features_enable,$addiFeatureData,$fave_floor_plans_enable,$fpData1,$fave_featured,$fave_property_address,$fave_property_zip,$fave_video_url,$fave_payment_status,$fave_property_map_street_view,$_dp_original,$fave_property_sec_price,$houzez_total_property_views,$fave_multiunit_plans_enable,$propertyCreateDate,$propertyModifiedDate,$houzez_recently_viewed,$houzez_geolocation_lat,$houzez_geolocation_long,$fave_virtual_tour,$fave_single_top_area,$fave_single_content_area,$fave_agent_display_option,$fave_property_agency,$_edit_lock,$_edit_last,$fave_currency_info,$houzez_manual_expire,$_houzez_expiration_date_status,$fave_video_image,$favAtta,$images,$property_type,$property_status,$property_feature,$property_label,$property_city,$property_state,$post_status);
+			/** @noinspection PhpUndefinedVariableInspection */
+			/** @noinspection PhpUndefinedVariableInspection */
+			$row = [
+				$propertyId,$propertyTitle,$propertyContent,$propertyModified,$slide_template,$_thumbnail_id,$fave_property_size,$fave_property_size_prefix,$fave_property_bedrooms,$fave_property_bathrooms,$fave_property_garage,$fave_property_garage_size,$fave_property_year,$fave_property_id,$fave_property_price,$fave_property_price_postfix,$fave_property_map,$fave_property_map_address,$fave_property_location,$fave_property_country,$fave_agents,$fave_additional_features_enable,$addiFeatureData,$fave_floor_plans_enable,$fpData1,$fave_featured,$fave_property_address,$fave_property_zip,$fave_video_url,$fave_payment_status,$fave_property_map_street_view,$_dp_original,$fave_property_sec_price,$houzez_total_property_views,$fave_multiunit_plans_enable,$propertyCreateDate,$propertyModifiedDate,$houzez_recently_viewed,$houzez_geolocation_lat,$houzez_geolocation_long,$fave_virtual_tour,$fave_single_top_area,$fave_single_content_area,$fave_agent_display_option,$fave_property_agency,$_edit_lock,$_edit_last,$fave_currency_info,$houzez_manual_expire,$_houzez_expiration_date_status,$fave_video_image,$favAtta,$images,$property_type,$property_status,$property_feature,$property_label,$property_city,$property_state,$post_status
+			];
 
 			fputcsv($out, $row,"\t");
 		}
@@ -620,97 +695,16 @@ class export {
 //		}
 	}
 
-    public static function createXls($finalFilePath,$finalFileSrc){
-	    /* getting the posts data for exportation*/
-	    $args = array('post_type'   => 'property','numberposts' => -1,'post_status' => 'any');
-	    $properties = get_posts( $args );
-	    /*end*/
 
-        /**
-	     * sheet headers
-	     */
-	    $headers = array(
-            "post_id",
-            "post_title",
-            "post_content",
-            "post_modified",
-            "slide_template",
-            "_thumbnail_id",
-            "fave_property_size",
-            "fave_property_size_prefix",
-            "fave_property_bedrooms",
-            "fave_property_bathrooms",
-            "fave_property_garage",
-            "fave_property_garage_size",
-            "fave_property_year",
-            "fave_property_id",
-            "fave_property_price",
-            "fave_property_price_postfix",
-            "fave_property_map",
-            "fave_property_map_address",
-            "fave_property_location",
-            "fave_property_country",
-            "fave_agents",
-            "fave_additional_features_enable",
-            "additional_features",
-            "fave_floor_plans_enable",
-            "floor_plans",
-            "fave_featured",
-            "fave_property_address",
-            "fave_property_zip",
-            "fave_video_url",
-            "fave_payment_status",
-            "fave_property_map_street_view",
-            "_dp_original",
-            "fave_property_sec_price",
-            "houzez_total_property_views",
-            "fave_multiunit_plans_enable",
-            "property_create_date",
-            "property_modified_date",
-            "houzez_recently_viewed",
-            "houzez_geolocation_lat",
-            "houzez_geolocation_long",
-            "fave_virtual_tour",
-            "fave_single_top_area",
-            "fave_single_content_area",
-            "fave_agent_display_option",
-            "fave_property_agency",
-            "_edit_lock",
-            "_edit_last",
-            "fave_currency_info",
-            "houzez_manual_expire",
-            "_houzez_expiration_date_status",
-            "fave_video_image",
-            "fave_attachments",
-            "images",
-            "property_type",
-            "property_status",
-            "property_feature",
-            "property_label",
-            "property_city",
-            "property_state",
-            "post_status"
-        );
-
-        $out = fopen($finalFilePath, 'w');
-
-	    $spreadsheet = new Spreadsheet();
-	    $activeWorksheet = $spreadsheet->getActiveSheet();
-	    $currentColumn = 'A';
-	    $row = 1;
-
-	    foreach ($headers as $header) {
-		    $activeWorksheet->setCellValue( $currentColumn . $row, $header);
-		    $currentColumn++;
-	    }
+	/**
+     * It will handle type of file to download after submit
+	 * @param $exportType
+	 *
+	 * @return mixed|null
+	 */
+	public static function handleSubmit($exportType){
 
 
-
-    }
-
-    public static function handleSubmit($exportType){
-
-        global $wpdb;
         $uploadFolderPath = wp_upload_dir();
         $uploadBaseDir = $uploadFolderPath['basedir'] ;
         $uploadBaseUrl = $uploadFolderPath['baseurl'] ;
@@ -728,18 +722,19 @@ class export {
             $finalFilePath .= $fileName ;
             $finalFileSrc .= $fileName ;
 
-            return \RespacioHouzezImport\export::respacio_export_XML($finalFilePath,$finalFileSrc);
+            return export::respacio_export_XML($finalFilePath,$finalFileSrc);
         } else {
 
             $fileName = 'properties_export_'.date('dmYhis').'.xls';
             $finalFilePath .= $fileName ;
             $finalFileSrc .= $fileName ;
 
-            return \RespacioHouzezImport\export::respacio_export_XLS($finalFilePath,$finalFileSrc);
+            return export::respacio_export_XLS($finalFilePath,$finalFileSrc);
         }
 
     }
 
+	/** @noinspection PhpEnforceDocCommentInspection */
 	public static function exportSelectionUi(){ ?>
         <div class="respacio-notice">
             <h2 class="activation_title">Export Properties</h2>

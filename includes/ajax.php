@@ -1,20 +1,24 @@
-<?php
+<?php /** @noinspection PhpClassNamingConventionInspection */
+
 namespace RespacioHouzezImport;
 if (!defined('ABSPATH')) exit; // Exit if accessed directly
 
-use RespacioHouzezImport\export;
-use RespacioHouzezImport\license;
-
-
 class ajax{
-	public static function activate(){
-		add_action('wp_ajax_exportAndDownload',array('RespacioHouzezImport\ajax','exportAndDownload'));
-		add_action('wp_ajax_checkApiKey',array('RespacioHouzezImport\ajax','checkApiKey'));
-		add_action('wp_ajax_isActivated',array('RespacioHouzezImport\ajax','isActivated'));
-		add_action('wp_ajax_removeKey',array('RespacioHouzezImport\ajax','removeKey'));
-		add_action('wp_ajax_getApiKeyMasked',array('RespacioHouzezImport\ajax','getApiKeyMasked'));
+	/**
+	 * Initializing all ajax methods
+	 * @return void
+	 */
+	public static function activate() {
+		add_action('wp_ajax_exportAndDownload', [ 'RespacioHouzezImport\ajax','exportAndDownload' ] );
+		add_action('wp_ajax_checkApiKey', [ 'RespacioHouzezImport\ajax','checkApiKey' ] );
+		add_action('wp_ajax_isActivated', [ 'RespacioHouzezImport\ajax','isActivated' ] );
+		add_action('wp_ajax_removeKey', [ 'RespacioHouzezImport\ajax','removeKey' ] );
+		add_action('wp_ajax_getApiKeyMasked', [ 'RespacioHouzezImport\ajax','getApiKeyMasked' ] );
 	}
 
+	/** @noinspection PhpNoReturnAttributeCanBeAddedInspection
+	 * @noinspection PhpMethodNamingConventionInspection
+	 */
 	public static function exportAndDownload(){
 
 		/**
@@ -37,6 +41,11 @@ class ajax{
 		wp_die();
 	}
 
+	/**
+	 * checking api key and based on the api key sending true or false as json string
+	 * @return void
+	 *
+	 */
 	public static function checkApiKey(){
 		/* checking nonce*/
 		if(!wp_verify_nonce($_POST['respacio_houzez_nonce'],'respacio_houzez_nonce'))  wp_die();
@@ -44,7 +53,7 @@ class ajax{
 		$key = sanitize_text_field($_POST['key']);
 
 		/** On valid API Key */
-		if(license::testApiKey($key) == false) {
+		if( ! license::testApiKey( $key ) ) {
 			delete_option( 'property_verification_api' );
 			delete_option( 'verify_api' );
 			echo json_encode(false);
@@ -52,7 +61,7 @@ class ajax{
 		}
 
 		/** On invalid API key */
-		if(license::testApiKey($key) == true){
+		if( license::testApiKey( $key ) ){
 			update_option('property_verification_api',$key,true);
 			update_option('verify_api',true,true);
 			update_option('sync_type',1,true);
@@ -62,9 +71,10 @@ class ajax{
 	}
 
 	/**
-	 * @return strin json/boolean
+	 * removeing api key
+	 * @noinspection PhpNoReturnAttributeCanBeAddedInspection
 	 */
-	public static function removeKey(){
+	public static function removeKey() {
 
 		if(!wp_verify_nonce($_POST['respacio_houzez_nonce'],'respacio_houzez_nonce'))  wp_die();
 		if(delete_option( 'property_verification_api' ) && delete_option( 'verify_api' )){
@@ -76,9 +86,10 @@ class ajax{
 	}
 
 	/**
-	 * @return string json encoded boolean value
+	 * checking if plugin activated or not
+	 * @noinspection PhpNoReturnAttributeCanBeAddedInspection
 	 */
-	public static function isActivated(){
+	public static function isActivated() {
 		/**
 		 * checking the nonce
 		 */
@@ -95,9 +106,10 @@ class ajax{
 	}
 
 	/**
-	 * @return string json_ecoded string contain API key
+	 * masking the API key and returning
+	 * @noinspection PhpNoReturnAttributeCanBeAddedInspection
 	 */
-	public static function getApiKeyMasked(){
+	public static function getApiKeyMasked() {
 		/** checking the nonce*/
 		if(!wp_verify_nonce($_POST['respacio_houzez_nonce'],'respacio_houzez_nonce'))  wp_die();
 		$key = get_option('property_verification_api',false);
@@ -112,7 +124,7 @@ class ajax{
 
 		$key_length = strlen($key);
 		$masking_length = $key_length - 12;
-		$maskedKey = substr($key,0,6). str_repeat("*",$masking_length) . substr($key, -6);
+		$maskedKey = substr($key,0,6). str_repeat( '*',$masking_length) . substr($key, -6);
 
 		echo json_encode($maskedKey);
 		wp_die();
