@@ -772,9 +772,8 @@ class corn
 
 		global $wpdb;
 		if ( !empty($customTaxo) ) {
-
+			
 			$delete_feature = '';
-
 			$propAtt = ($customTaxo);
 			$table_name = $wpdb->prefix . 'term_relationships';
 
@@ -788,7 +787,8 @@ class corn
 
 			$came_taxonomy = [];
 			if ( !empty($propAtt) ) {
-				$propAtt = explode('|', $propAtt);
+				
+				$propAtt = array_values(array_filter(explode('|', $propAtt)));
 				foreach ($propAtt as $pAtt) {
 
 					$propFeatureTermId = '';
