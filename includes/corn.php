@@ -1,10 +1,10 @@
-<?php /** @noinspection PhpEnforceDocCommentInspection */
+<?php
+/** @noinspection PhpEnforceDocCommentInspection */
 /** @noinspection PhpMissingStrictTypesDeclarationInspection */
-
 /** @noinspection PhpArraySearchInBooleanContextInspection */
 
 namespace RespacioHouzezImport;
-
+use RespacioHouzezImport\post as raspost;
 use Exception;
 use WP_Query;
 
@@ -330,6 +330,8 @@ class corn
 					}
 
                     // PROPERTY VIDEO URL & IMAGE START
+					//TODO: log the synced property.
+					raspost::recordSyncedProperty($postId);
 
 					if(!empty($postId)){
 						$propVideoImage = '';
@@ -880,4 +882,6 @@ class corn
 			$wpdb->insert($table_name, $insert_thumb);
 		}
 	}
+
+	
 }

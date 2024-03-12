@@ -11,6 +11,8 @@ import Settingpage from './setting/settingpage.vue'
 import Guide from './guide/guide.vue'
 import Cron from './cron/cron.vue'
 import {ref} from 'vue';
+import Psync from './propertysync/psync.vue'
+
 
 import {useBreadcrumbStore} from '../stores/breadcrumb'
 import {useGlobalstateStore} from "../stores/globalstate";
@@ -27,13 +29,15 @@ license.getActivatedStatus();
  */
 </script>
 <template>
-	<div class="max-w-5xl mx-auto pt-2">
+	<div class="  max-w-5xl mx-auto pt-2 ">
 	<!--active window switcher-->
 	<template v-if="windowStore.activeWindow == 0 ">
 		<Status v-on:click="windowStore.changeActiveWindow(1)"/>
 		<Export v-on:click="windowStore.changeActiveWindow(3)"/>
+		<Psync v-on:clicl="windowStore.changeActiveWindow(6)"/>
 		
 		<Wpml/>
+
 		<Setting v-on:click="windowStore.changeActiveWindow(4)"/>
 		<Guide v-on:click="windowStore.changeActiveWindow(5)"/>
 	</template>

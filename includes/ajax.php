@@ -1,6 +1,8 @@
 <?php /** @noinspection PhpClassNamingConventionInspection */
 
 namespace RespacioHouzezImport;
+use RespacioHouzezImport\corn as corn;
+
 if (!defined('ABSPATH')) exit; // Exit if accessed directly
 
 class ajax{
@@ -14,6 +16,7 @@ class ajax{
 		add_action('wp_ajax_isActivated', [ 'RespacioHouzezImport\ajax','isActivated' ] );
 		add_action('wp_ajax_removeKey', [ 'RespacioHouzezImport\ajax','removeKey' ] );
 		add_action('wp_ajax_getApiKeyMasked', [ 'RespacioHouzezImport\ajax','getApiKeyMasked' ] );
+		add_action('wp_ajax_ajaxSyncProperties', [ 'RespacioHouzezImport\ajax','ajaxSyncProperties' ] );
 	}
 
 	/** @noinspection PhpNoReturnAttributeCanBeAddedInspection
@@ -129,5 +132,14 @@ class ajax{
 		echo json_encode($maskedKey);
 		wp_die();
 
+	}
+
+	public static function ajaxSyncProperties(){
+		/** checking the nonce*/
+		if(!wp_verify_nonce($_POST['respacio_houzez_nonce'],'respacio_houzez_nonce'))  wp_die();
+		corn::respacio_sync_properties();
+
+		echo json_encode(true);
+		wp_die();
 	}
 }

@@ -237,4 +237,20 @@ class post {
 			}
 		}
 	}
+
+	public static function recordSyncedProperty($postId = false){
+		if($postId == false) return;
+
+		$postTitle = get_the_title($postId);
+
+		wp_insert_post(
+			array(
+				'post_title' => $postTitle ? $postTitle : '',
+				'post_status' => 'publish',
+				'post_type' => 'property_log'
+
+			)
+		);
+
+	}
 }

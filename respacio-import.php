@@ -19,6 +19,7 @@ use RespacioHouzezImport\ui;
 use RespacioHouzezImport\ajax;
 use RespacioHouzezImport\corn;
 use RespacioHouzezImport\image;
+use RespacioHouzezImport\cpt;
 
 /**
  * making sure to execute the plugin after `plugin_loaded` hook
@@ -40,7 +41,7 @@ add_action('plugin_loaded', function () {
 	ajax::activate();
 	image::activate();
 	corn::activate();
-
+	cpt::configure();
 
 	include('includes/admin-page.php');
 });
