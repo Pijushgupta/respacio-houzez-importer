@@ -240,17 +240,77 @@ class post {
 
 	public static function recordSyncedProperty($postId = false){
 		if($postId == false) return;
-
-		$postTitle = get_the_title($postId);
-
-		wp_insert_post(
-			array(
-				'post_title' => $postTitle ? $postTitle : '',
+	
+		// Check if a post with property_id meta value already exists
+		$existing_post_id = get_posts(array(
+			'post_type'      => 'property_log',
+			'meta_key'       => 'property_id',
+			'meta_value'     => $postId,
+			'fields'         => 'ids',
+			'posts_per_page' => 1, // We only need one post, if any
+		));
+	
+		// If an existing post is found, update it
+		if (!empty($existing_post_id)) {
+			$existing_post_id = $existing_post_id[0]; // Extract the ID from the array
+			$post_title = get_the_title($existing_post_id); // Get the title of existing post
+			wp_update_post(array(
+				'ID'          => $existing_post_id,
+				'post_title'  => $post_title ? $post_title : '',
 				'post_status' => 'publish',
-				'post_type' => 'property_log'
+			));
+		} else {
+			// If no existing post is found, insert a new one
+			$post_title = get_the_title($postId);
+			wp_insert_post(array(
+				'post_title'  => $post_title ? $post_title : '',
+				'post_status' => 'publish',
+				'post_type'   => 'property_log',
+				'meta_input'  => array(
+					'property_id' => $postId,
+				),
+			));
+		}
+	}
+	
 
-			)
+	public static function getPropertyLog($offset,$numposts){
+		$args = array(
+			'post_type' => 'property_log', 
+			'posts_per_page' => $numposts, // Number of posts per page
+			'offset' => $offset, // Number of posts to skip
 		);
+		
+		$query = new \WP_Query( $args );
+		$data = array();
 
+		if ( $query->have_posts() ) {
+			while ( $query->have_posts() ) {
+				$query->the_post();
+				$data[] = array(
+					'id'      => get_the_ID(),
+					'title'   => get_the_title(),
+					'content' => get_the_content(),
+					'time'	  => get_the_time('F j, Y g:i a'),
+					'property_id' => get_post_meta(get_the_ID(),'property_id',true)
+					// Add more post data as needed
+				);
+			}
+			wp_reset_postdata();
+		}
+		return $data;
+		
+	}
+
+	public static function getTotalNumberOfLog(){
+		$args = array(
+			'post_type' => 'property_log',
+			'post_status' => 'publish',
+			'posts_per_page' => -1, // Set to -1 to retrieve all posts
+		  );
+		  
+		  $query = new \WP_Query($args);
+		  $total_posts = $query->found_posts;
+		  return $total_posts;
 	}
 }
