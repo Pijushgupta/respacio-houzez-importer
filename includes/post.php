@@ -278,7 +278,8 @@ class post {
 		$args = array(
 			'post_type' => 'property_log', 
 			'posts_per_page' => $numposts, // Number of posts per page
-			'offset' => $offset, // Number of posts to skip
+			'offset' => $offset, // Number of posts to skip,
+			'order' => 'DESC'
 		);
 		
 		$query = new \WP_Query( $args );
@@ -292,7 +293,8 @@ class post {
 					'title'   => get_the_title(),
 					'content' => get_the_content(),
 					'time'	  => get_the_time('F j, Y g:i a'),
-					'property_id' => get_post_meta(get_the_ID(),'property_id',true)
+					'property_id' => get_post_meta(get_the_ID(),'property_id',true),
+					'guid' => get_the_guid(get_post_meta(get_the_ID(),'property_id',true))
 					// Add more post data as needed
 				);
 			}

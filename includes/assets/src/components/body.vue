@@ -12,6 +12,8 @@ import Guide from './guide/guide.vue'
 import Cron from './cron/cron.vue'
 import {ref} from 'vue';
 import Psync from './propertysync/psync.vue'
+import Userregistration from './userregistration/userregistration.vue'
+import Userregistrationpage from './userregistration/userregistrationpage.vue'
 
 
 import {useBreadcrumbStore} from '../stores/breadcrumb'
@@ -34,11 +36,12 @@ license.getActivatedStatus();
 	<template v-if="windowStore.activeWindow == 0 ">
 		<Status v-on:click="windowStore.changeActiveWindow(1)"/>
 		<Export v-on:click="windowStore.changeActiveWindow(3)"/>
-		<Psync v-on:clicl="windowStore.changeActiveWindow(6)"/>
+		<Psync/>
 		
 		<Wpml/>
 
 		<Setting v-on:click="windowStore.changeActiveWindow(4)"/>
+		<Userregistration v-on:click="windowStore.changeActiveWindow(7)"/>
 		<Guide v-on:click="windowStore.changeActiveWindow(5)"/>
 	</template>
 	<!--ends-->
@@ -47,7 +50,7 @@ license.getActivatedStatus();
 		<Statuspage v-if="windowStore.activeWindow == 1"/>
 		<Exportpage v-if="windowStore.activeWindow == 3"/>
 		<Settingpage v-if="windowStore.activeWindow == 4"/>
-		
+		<Userregistrationpage v-if="windowStore.activeWindow == 7" />
 	<!--end-->
 	</div>
 </template>

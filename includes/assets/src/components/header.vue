@@ -26,10 +26,10 @@ const windowStore = useBreadcrumbStore()
     <template v-if="windowStore.activeWindow == 1"><span class="cursor-pointer font-medium">Status</span></template>
     <template v-if="windowStore.activeWindow == 2"><span class="cursor-pointer font-medium">Cron Jobs</span></template>
     <template v-if="windowStore.activeWindow == 3"><span class="cursor-pointer font-medium">Export</span></template>
-    <template v-if="windowStore.activeWindow == 4"><span class="cursor-pointer font-medium">Setting</span></template>
+    <template v-if="windowStore.activeWindow == 4"><span class="cursor-pointer font-medium">Settings</span></template>
     <template v-if="windowStore.activeWindow == 5"><span class="cursor-pointer font-medium">Knowledge Base</span></template>
-    <template v-if="windowStore.activeWindow == 6"><span class="cursor-pointer font-medium">Image Settings</span></template>
     
+    <template v-if="windowStore.activeWindow == 7"><span class="cursor-pointer font-medium">Connect</span></template>
     </div>
   </div>
 </template>

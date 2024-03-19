@@ -70,14 +70,16 @@ class ui
 
 	public static function render()
 	{
-		$url = admin_url('admin-ajax.php');
+		$ajaxUrl = admin_url('admin-ajax.php');
 		$respacio_nonce = wp_create_nonce('respacio_houzez_nonce');
 		$dashboardLang = explode('_', get_locale())[0];
+		$siteUrl = get_bloginfo('url');
 		printf('<script>
         var respacio_houzez_ajax_path = "%1$s";
         var respacio_houzez_nonce = "%2$s"; 
         var adminLocale = "%3$s";
-        </script><div id="respacio_houzez_root"></div>', $url, $respacio_nonce, $dashboardLang);
+		var siteUrl = "%4$s";
+        </script><div id="respacio_houzez_root"></div>', $ajaxUrl, $respacio_nonce, $dashboardLang, $siteUrl);
 	}
 	public static function newAssets($hook)
 	{

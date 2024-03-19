@@ -3,6 +3,7 @@
 namespace RespacioHouzezImport;
 use RespacioHouzezImport\corn as corn;
 use RespacioHouzezImport\post as raspost;
+use RespacioHouzezImport\option;
 
 if (!defined('ABSPATH')) exit; // Exit if accessed directly
 
@@ -20,6 +21,8 @@ class ajax{
 		add_action('wp_ajax_ajaxSyncProperties', [ 'RespacioHouzezImport\ajax','ajaxSyncProperties' ] );
 		add_action('wp_ajax_ajaxGetTotalNumberOfPropertyLog', [ 'RespacioHouzezImport\ajax','ajaxGetTotalNumberOfPropertyLog' ] );
 		add_action('wp_ajax_ajaxGetPropertyLogs', [ 'RespacioHouzezImport\ajax','ajaxGetPropertyLogs' ] );
+		add_action('wp_ajax_ajaxGetLogPerPageOption', [ 'RespacioHouzezImport\ajax','ajaxGetLogPerPageOption' ] );
+		add_action('wp_ajax_ajaxSetLogPerPageOption', [ 'RespacioHouzezImport\ajax','ajaxSetLogPerPageOption' ] );
 	}
 
 	/** @noinspection PhpNoReturnAttributeCanBeAddedInspection
@@ -171,4 +174,24 @@ class ajax{
 		echo json_encode(raspost::getPropertyLog($offset,$numposts));
 		wp_die();
 	}
+
+	public static function ajaxGetLogPerPageOption(){
+        /** checking the nonce*/
+		if(!wp_verify_nonce($_POST['respacio_houzez_nonce'],'respacio_houzez_nonce'))  wp_die();
+		echo json_encode(option::getLogPerPageOption());
+		wp_die();
+    }
+
+	public static function ajaxSetLogPerPageOption(){
+        /** checking the nonce*/
+		if(!wp_verify_nonce($_POST['respacio_houzez_nonce'],'respacio_houzez_nonce'))  wp_die();
+		if(!isset($_POST['perpage'])) wp_die();
+		
+		//sanitizing and converting int if its a string 
+		$perpage = intval(sanitize_text_field($_POST['perpage']));
+		// echo json_encode($perpage);
+		// wp_die();
+		echo json_encode(option::setLogPerPageOption($perpage));
+		wp_die();
+    }
 }
