@@ -92,7 +92,7 @@ if(license.isActivated == true){
     <div class="rounded-xl bg-white mb-1 shadow p-4">
       <div class="flex flex-row items-center justify-between">
         <div class="flex flex-col  w-1/2">
-          <div class="text-sm">Activate Plugin</div>
+          <div class="text-sm">Change API key </div>
           <div class="text-xs">Enter your website API key from Respacio CRM</div>
         </div>
         <div class="flex flex-row w-1/2">

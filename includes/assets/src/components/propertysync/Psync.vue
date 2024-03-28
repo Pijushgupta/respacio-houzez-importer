@@ -31,15 +31,15 @@ const propertySync = () =>{
 
           </div>
         <div class="flex flex-col ml-3">
-          <div class="text-sm">Sync Properties</div>
-          <div class="text-xs">Manually sync properties with crm.(not required) </div>
+          <div class="text-sm">{{ $t('SyncProperties') }}</div>
+          <div class="text-xs">{{ $t('Manuallysyncpropertieswithcrm') }}</div>
         </div>
       </div>
       
       
       
       <div>
-        <button class="bg-blue-800 px-4 py-1 rounded-full text-white" @click="propertySync">Sync</button>
+        <button class="bg-blue-800 px-4 py-1 rounded-full text-white" @click="propertySync">{{ $t('sync') }}</button>
 
       </div>
     </div>

@@ -72,7 +72,7 @@ class ui
 	{
 		$ajaxUrl = admin_url('admin-ajax.php');
 		$respacio_nonce = wp_create_nonce('respacio_houzez_nonce');
-		$dashboardLang = explode('_', get_locale())[0];
+		$dashboardLang = defined('ICL_LANGUAGE_CODE') ? ICL_LANGUAGE_CODE : 'en';;
 		$siteUrl = get_bloginfo('url');
 		printf('<script>
         var respacio_houzez_ajax_path = "%1$s";

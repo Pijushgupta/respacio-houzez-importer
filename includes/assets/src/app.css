@@ -32,6 +32,6 @@
   .no-scroll{
 	@apply h-screen overflow-hidden;
   }
-  #registername, #registersurname, #registeremail, #registersurwebsite, #registertel, #registeruser, #registerpass,#registerotp{
+  #registername, #registersurname, #registeremail, #registersurwebsite, #registertel, #registeruser, #registerpass,#registerotp,#loginemail,#loginpassword,#loginwebsite{
     @apply py-1 !important;
   }

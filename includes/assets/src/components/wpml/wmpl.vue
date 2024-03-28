@@ -8,7 +8,7 @@
 </div>
       <div class="flex flex-col ml-3">
         <div class="text-sm">Wpml</div>
-        <div class="text-xs">Enable WordPress multilingual plugin support</div>
+        <div class="text-xs">{{ $t('EnableWordPressmultilingualpluginsupport') }}</div>
       </div>
     </div>
       

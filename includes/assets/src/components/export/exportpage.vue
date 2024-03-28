@@ -102,8 +102,8 @@ function copyToClipBoard(){
 	<div class="rounded-xl bg-white mb-1 shadow p-4">
 		<div class="flex flex-row items-center justify-between">
 			<div class="flex flex-col ml-3 w-1/2">
-				<div class="text-sm">Export</div>
-				<div class="text-xs">Chose the file format</div>
+				<div class="text-sm">{{$t('export')}}</div>
+				<div class="text-xs">{{ $t('Choosethefileformat') }}</div>
 			</div>
 			<div class="flex flex-row w-1/2 justify-end">
 				<select class="w-full" v-on:change="showDownloadNotification" v-model="selectedFileType">

@@ -161,7 +161,7 @@ const changePage = (ofs) =>{
 </script>
 <template>
     <div class="relative">
-        <div class="absolute top-[-50px] right-0 rounded-xl bg-white shadow px-4 py-1 text-sm">Items per page: <select v-model="perpage" class="border-0 ">
+        <div class="absolute top-[-50px] right-0 rounded-xl bg-white shadow px-4 py-1 text-sm">{{ $t('Itemsperpage') }}: <select v-model="perpage" class="border-0 ">
             <option value="10">10</option>
             <option value="20">20</option>
             <option value="30">30</option>

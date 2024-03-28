@@ -4,6 +4,7 @@ namespace RespacioHouzezImport;
 use RespacioHouzezImport\corn as corn;
 use RespacioHouzezImport\post as raspost;
 use RespacioHouzezImport\option;
+use RespacioHouzezImport\account;
 
 if (!defined('ABSPATH')) exit; // Exit if accessed directly
 
@@ -23,6 +24,11 @@ class ajax{
 		add_action('wp_ajax_ajaxGetPropertyLogs', [ 'RespacioHouzezImport\ajax','ajaxGetPropertyLogs' ] );
 		add_action('wp_ajax_ajaxGetLogPerPageOption', [ 'RespacioHouzezImport\ajax','ajaxGetLogPerPageOption' ] );
 		add_action('wp_ajax_ajaxSetLogPerPageOption', [ 'RespacioHouzezImport\ajax','ajaxSetLogPerPageOption' ] );
+
+		add_action('wp_ajax_ajaxVerifyEmail',['RespacioHouzezImport\ajax','ajaxVerifyEmail']);
+		add_action('wp_ajax_ajaxCreateAccount',['RespacioHouzezImport\ajax','ajaxCreateAccount']);
+		add_action('wp_ajax_ajaxAccountLogin',['RespacioHouzezImport\ajax','ajaxAccountLogin']);
+        add_action('wp_ajax_ajaxIsApiKeyPresent',['RespacioHouzezImport\ajax','ajaxIsApiKeyPresent']);
 	}
 
 	/** @noinspection PhpNoReturnAttributeCanBeAddedInspection
@@ -61,7 +67,7 @@ class ajax{
 		if(!array_key_exists('key',$_POST)) wp_die();
 		$key = sanitize_text_field($_POST['key']);
 
-		/** On valid API Key */
+		/** On invalid API Key */
 		if( ! license::testApiKey( $key ) ) {
 			delete_option( 'property_verification_api' );
 			delete_option( 'verify_api' );
@@ -69,7 +75,7 @@ class ajax{
 			wp_die();
 		}
 
-		/** On invalid API key */
+		/** On valid API key */
 		if( license::testApiKey( $key ) ){
 			update_option('property_verification_api',$key,true);
 			update_option('verify_api',true,true);
@@ -193,5 +199,145 @@ class ajax{
 		// wp_die();
 		echo json_encode(option::setLogPerPageOption($perpage));
 		wp_die();
+    }
+
+
+	public static function ajaxVerifyEmail(){
+
+		if(!wp_verify_nonce($_POST['respacio_houzez_nonce'],'respacio_houzez_nonce'))  wp_die();
+		if(!isset($_POST['email'])){
+			echo json_encode(['msg'=>'no email address provided']); 
+			wp_die();
+		} 
+
+		$email = sanitize_email($_POST['email']);
+		echo json_encode(account::generateCode($email));
+		wp_die();
+	}
+
+	public static function ajaxCreateAccount(){
+		
+		
+		if(!wp_verify_nonce($_POST['respacio_houzez_nonce'],'respacio_houzez_nonce')){
+			echo json_encode(['Invalid nonce']); 
+			wp_die();
+		} 
+		
+		//fields to check
+		$fields = ['name','surname','email_address','website','mobile','no_of_user','password','code'];
+		
+		//missing indicator
+		$missingField = false;
+
+		//store sanitize data
+		$post = [];
+
+		
+
+		foreach($fields as $field){
+			//checking for missing fields
+			if(!isset($_POST[$field])){		
+				$missingField = $field;
+				break;
+			}
+
+			//sanitizing and storing $post - text field
+			if(
+				$field == 'name' || 
+				$field == 'surname' || 
+				$field == 'mobile' || 
+				$field == 'no_of_user' ||
+				$field == 'code'
+			) {
+				$post[$field] = sanitize_text_field($_POST[$field]);
+			} 
+			
+			//sanitizing email
+			if($field == 'email_address') $post[$field] = sanitize_email($_POST[$field]);
+
+			//sanitizing url
+			if($field == 'website') $post[$field] = esc_url_raw($_POST[$field]);
+
+			//not sanitizing, just storing the password
+			if($field == 'password') $post[$field] = $_POST[$field]; 
+		}
+
+		
+
+		if($missingField != false){
+			echo json_encode(['msg'=>$missingField . 'missing']); 
+			wp_die();
+		} 
+
+
+		$response = account::createAccount($post);
+		echo json_encode($response);
+		
+		wp_die();
+
+	}
+
+    /**
+     * for user login - ajax method
+     * @return void
+     */
+	public static function ajaxAccountLogin(){
+		if(!wp_verify_nonce($_POST['respacio_houzez_nonce'],'respacio_houzez_nonce')){
+			echo json_encode(['Invalid nonce']); 
+			wp_die();
+		} 
+
+		//fields to check
+		$fields = ['email_address','password','website'];
+		//missing indicator
+		$missingField = false;
+		//store sanitize data
+		$post = [];
+
+		foreach($fields as $field){
+			if(!isset($_POST[$field])){		
+				$missingField = $field;
+				break;
+			}
+
+			//sanitizing email
+			if($field == 'email_address') $post[$field] = sanitize_email($_POST[$field]);
+
+			//sanitizing url
+			if($field == 'website') $post[$field] = esc_url_raw($_POST[$field]);
+
+			//not sanitizing, just storing the password
+			if($field == 'password') $post[$field] = $_POST[$field]; 
+		}
+
+		if($missingField != false){
+			echo json_encode(['msg'=>$missingField . 'is missing']); 
+			wp_die();
+		}
+
+		$response = account::login($post);
+		echo json_encode($response);
+		
+		wp_die();
+	}
+
+    /**
+     * to check if user having api key or not
+     * @return void
+     */
+    public static function ajaxIsApiKeyPresent(){
+        if(!wp_verify_nonce($_POST['respacio_houzez_nonce'],'respacio_houzez_nonce')){
+            echo json_encode(['Invalid nonce']);
+            wp_die();
+        }
+
+        $keyStatus = option::getApiKey();
+        if(!$keyStatus){
+            echo json_encode(false);
+        }else{
+            echo json_encode(true);
+        }
+
+        wp_die();
     }
 }

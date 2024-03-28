@@ -11,6 +11,10 @@ import { createPinia } from "pinia";
  */
 import Toast from "vue-toastification";
 /**
+ * Importing local languages
+ */
+import i18n from "./locales/i18n";
+/**
  * Importing css for vue-toast for notification
  */
 import "vue-toastification/dist/index.css";
@@ -44,4 +48,5 @@ const toastOption = {
     toastClassName: "awraq-toast",
 };
 app.use(Toast, toastOption);
+app.use(i18n);
 app.mount("#respacio_houzez_root");
