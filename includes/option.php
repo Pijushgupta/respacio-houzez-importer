@@ -171,6 +171,7 @@ class option{
 
     public static function setApiKey(string $key=''){
         if($key == '') return false;
+        update_option('verify_api',true,true);
         return update_option('property_verification_api',$key);
     }
     

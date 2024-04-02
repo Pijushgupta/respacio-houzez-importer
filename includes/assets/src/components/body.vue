@@ -14,6 +14,8 @@ import {ref} from 'vue';
 import Psync from './propertysync/psync.vue'
 import Userregistration from './userregistration/userregistration.vue'
 import Userregistrationpage from './userregistration/userregistrationpage.vue'
+import Form from './form/form.vue'
+import Formpage from "./form/formpage.vue";
 
 
 import {useBreadcrumbStore} from '../stores/breadcrumb'
@@ -42,6 +44,7 @@ license.getActivatedStatus();
 
 		<Setting v-on:click="windowStore.changeActiveWindow(4)"/>
 		<Userregistration v-on:click="windowStore.changeActiveWindow(7)"/>
+    <Form v-on:click="windowStore.changeActiveWindow(8)"/>
 		<Guide v-on:click="windowStore.changeActiveWindow(5)"/>
 	</template>
 	<!--ends-->
@@ -51,6 +54,7 @@ license.getActivatedStatus();
 		<Exportpage v-if="windowStore.activeWindow == 3"/>
 		<Settingpage v-if="windowStore.activeWindow == 4"/>
 		<Userregistrationpage v-if="windowStore.activeWindow == 7" />
+    <Formpage v-if="windowStore.activeWindow == 8" />
 	<!--end-->
 	</div>
 </template>

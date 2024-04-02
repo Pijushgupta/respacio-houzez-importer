@@ -80,7 +80,7 @@ const next = () =>{
 
 }
 
-function generateKey(keyLength = 16) {
+function generateKey(keyLength = 22) {
   const characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
   const charactersLength = characters.length;
   let key = '';
