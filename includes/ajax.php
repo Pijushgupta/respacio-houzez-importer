@@ -6,6 +6,7 @@ use RespacioHouzezImport\post as raspost;
 use RespacioHouzezImport\option;
 use RespacioHouzezImport\account;
 use RespacioHouzezImport\cf7;
+use RespacioHouzezImport\gravity;
 use RespacioHouzezImport\forms;
 
 if (!defined('ABSPATH')) exit; // Exit if accessed directly
@@ -34,6 +35,9 @@ class ajax{
         add_action('wp_ajax_ajaxGetForms',['RespacioHouzezImport\ajax','ajaxGetForms']);
 
         add_action('wp_ajax_ajaxGetFormEntries',['RespacioHouzezImport\ajax','ajaxGetFormEntries']);
+        add_action('wp_ajax_ajaxSaveEntry',['RespacioHouzezImport\ajax','ajaxSaveEntry']);
+        add_action('wp_ajax_ajaxDeleteEntry',['RespacioHouzezImport\ajax','ajaxDeleteEntry']);
+        add_action('wp_ajax_ajaxToggleEntryStatus',['RespacioHouzezImport\ajax','ajaxToggleEntryStatus']);
 
 	}
 
@@ -347,14 +351,18 @@ class ajax{
         wp_die();
     }
 
-
     public static function ajaxGetForms(){
         if(!wp_verify_nonce($_POST['respacio_houzez_nonce'],'respacio_houzez_nonce')){
             echo json_encode(['Invalid nonce']);
             wp_die();
         }
 
-        echo json_encode(forms::removeActive(cf7::list()));
+        echo json_encode(forms::getAllForms([
+            'cf7'=>'Contact 7',
+            'gravity'=>'Gravity Forms',
+            'forminator' => 'Forminator',
+            'wpforms' => 'WPForms'
+            ]));
         wp_die();
     }
 
@@ -364,8 +372,71 @@ class ajax{
             wp_die();
         }
 
-        echo json_encode(forms::getAll());
+        echo json_encode(forms::getAllEntries());
         wp_die();
     }
 
+    /**
+     * @return false
+     */
+    public static function ajaxSaveEntry(){
+        if(!wp_verify_nonce($_POST['respacio_houzez_nonce'],'respacio_houzez_nonce')){
+            echo json_encode(['Invalid nonce']);
+            wp_die();
+        }
+
+        if(
+            !isset($_POST['form_type']) ||
+            !isset($_POST['form_id']) ||
+            !isset($_POST['form_title']) ||
+            !isset($_POST['form_type_name'])
+        ){
+            return false;
+        }
+
+        $post['form_type'] = sanitize_text_field($_POST['form_type']);
+        if($post['form_type'] == '') return false;
+        $post['form_id'] = sanitize_text_field($_POST['form_id']);
+        if($post['form_id'] == '') return false;
+        $post['form_title'] = sanitize_text_field($_POST['form_title']);
+        if($post['form_title'] == '') return false;
+        $post['form_type_name'] = sanitize_text_field($_POST['form_type_name']);
+        if($post['form_type_name'] == '') return false;
+
+        //adding extra field
+        $post['form_active'] = true;
+
+        echo json_encode(forms::saveEntries($post));
+        wp_die();
+    }
+
+    /**
+     * function to remove entries
+     * @return false|void
+     */
+    public static function ajaxDeleteEntry(){
+        if(!wp_verify_nonce($_POST['respacio_houzez_nonce'],'respacio_houzez_nonce')){
+            echo json_encode(['Invalid nonce']);
+            wp_die();
+        }
+
+        if(!isset($_POST['id'])) return false;
+        $id = sanitize_text_field($_POST['id']);
+
+        wp_delete_post($id,true);
+        echo json_encode(true);
+        wp_die();
+    }
+
+    public static function ajaxToggleEntryStatus(){
+        if(!wp_verify_nonce($_POST['respacio_houzez_nonce'],'respacio_houzez_nonce')){
+            echo json_encode(['Invalid nonce']);
+            wp_die();
+        }
+        if(!isset($_POST['id'])) return false;
+        $id = sanitize_text_field($_POST['id']);
+
+        echo json_encode(forms::toggleActiveStatus($id));
+        wp_die();
+    }
 }

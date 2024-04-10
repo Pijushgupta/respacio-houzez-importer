@@ -75,9 +75,6 @@ const next = () =>{
     return;
   }
 
-  
-
-
 }
 
 function generateKey(keyLength = 22) {
@@ -105,7 +102,7 @@ function isValidURL(url) {
 
 const getEmailVerificationCode = () => {
   
-  if(email.value == '') return false;
+  if(email.value === '') return false;
 
   const data = new FormData();
   data.append('respacio_houzez_nonce',respacio_houzez_nonce);

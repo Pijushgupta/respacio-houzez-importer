@@ -6,7 +6,7 @@ import Login from './login/login.vue';
 
 const currentTabNumber = ref(0)
 const apiKey = ref(null);
-const relax = siteUrl + "/wp-content/plugins/houzez-respacio-import/includes/dist/leaf.png";
+
 /**
  * checking if api key present or not
  */
@@ -28,7 +28,7 @@ const isApiKeyPresent = () =>{
 }
 isApiKeyPresent();
 
-const removeAPIKey = () =>{
+const removeAPIKey = () => {
   const data = new FormData();
   data.append('respacio_houzez_nonce',respacio_houzez_nonce);
   data.append('action','removeKey');
@@ -43,7 +43,6 @@ const removeAPIKey = () =>{
         if(res == true){
           window.location.reload();
         }
-
       })
       .catch(err => console.log(err));
 

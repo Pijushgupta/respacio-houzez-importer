@@ -155,24 +155,40 @@ class option{
                 'login'
             );
         }
-
         //sanitizing 
         foreach($paths as &$path){
             $path = sanitize_text_field($path);
         }
-
         //no need to be serialized, it will do by itself
         return update_option('RespacioHouzezImportAccountLoginPath',$paths);
     }
 
+    /**
+     * getting api key
+     * @param void
+     * @return false|mixed|null
+     */
     public static function getApiKey(){
         return get_option('property_verification_api',false);
     }
 
+    /**
+     * setting new api key
+     * @param string $key
+     * @return bool
+     */
     public static function setApiKey(string $key=''){
         if($key == '') return false;
         update_option('verify_api',true,true);
         return update_option('property_verification_api',$key);
     }
-    
+
+    /**
+     * this to sync the form fields with crm. which include custom and default
+     * @param void
+     * @return boolean
+     */
+    public static function syncFormFields(){
+
+    }
 }
