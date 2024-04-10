@@ -16,7 +16,7 @@ class account{
 
         $remoteAddress = 'https://' . $basePath . DIRECTORY_SEPARATOR . $controller[0] . DIRECTORY_SEPARATOR . $controller[1];
 
-        $response = remote::fetch( $remoteAddress, ['email_address'=>$email]);
+        $response = remote::post( $remoteAddress, ['email_address'=>$email]);
         if(is_wp_error($response)) return $response->get_error_message(); 
 
         $response = json_decode($response,true);
@@ -73,7 +73,7 @@ class account{
 
         $post['uniq_code'] = option::getRespacioSignature();
 
-        $response = remote::fetch( $remoteAddress, $post);
+        $response = remote::post( $remoteAddress, $post);
         if(is_wp_error($response)) return $response->get_error_message(); 
 
         $response = json_decode($response,true);
@@ -96,7 +96,7 @@ class account{
         /**
          * sending email, password and site address to get api key
          */
-        $response = remote::fetch($remoteAddress,$post);
+        $response = remote::post($remoteAddress,$post);
 
         /**
          * converting the json to associated array

@@ -38,7 +38,6 @@ class ajax{
         add_action('wp_ajax_ajaxSaveEntry',['RespacioHouzezImport\ajax','ajaxSaveEntry']);
         add_action('wp_ajax_ajaxDeleteEntry',['RespacioHouzezImport\ajax','ajaxDeleteEntry']);
         add_action('wp_ajax_ajaxToggleEntryStatus',['RespacioHouzezImport\ajax','ajaxToggleEntryStatus']);
-
 	}
 
 	/** @noinspection PhpNoReturnAttributeCanBeAddedInspection

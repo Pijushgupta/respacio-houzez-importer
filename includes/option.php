@@ -1,7 +1,7 @@
 <?php
 
 namespace RespacioHouzezImport;
-
+use RespacioHouzezImport\remote;
 class option{
     //this to get option value of log per page
     public static function getLogPerPageOption(){
@@ -69,26 +69,22 @@ class option{
                 'send_verification_code'
             );
         }
-
         //sanitizing 
         foreach($paths as &$path){
             $path = sanitize_text_field($path);
         }
-
         //no need to be serialized, it will do by itself
         return update_option('RespacioHouzezImportEmailControllerPath',$paths);
     }
 
 
     public static function getCreateAccountPath(){
-
         $optionValue = get_option('RespacioHouzezImportCreateAccountPath',false);
         if($optionValue != false){
             return $optionValue;
         }
         //setting it if not found
         self::setCreateAccountPath();
-
         //no need to unserialize 
         return get_option('RespacioHouzezImportCreateAccountPath',false);
 
@@ -96,7 +92,6 @@ class option{
 
 
     public static function setCreateAccountPath(array $paths = []){
-
         //checking if provided $paths are empty or not 
         if(empty($paths)) {
             $paths = array(
@@ -104,27 +99,21 @@ class option{
                 'user_signup'
             );
         }
-
         //sanitizing 
         foreach($paths as &$path){
             $path = sanitize_text_field($path);
         }
-
         //no need to be serialized, it will do by itself
         return update_option('RespacioHouzezImportCreateAccountPath',$paths);
     }
 
     public static function getRespacioSignature(){
-
         $optionValue = get_option('RespacioHouzezImportSignature',false);
         if($optionValue != false){
             return $optionValue;
         }
-
         //setting it if not found
         self::setRespacioSignature();
-
-        
         return get_option('RespacioHouzezImportSignature',false);
     }
 
@@ -189,6 +178,34 @@ class option{
      * @return boolean
      */
     public static function syncFormFields(){
+        $default = [
+            ['name'=>'First Name', 'parameter_key' => 'name'],
+            ['name'=>'Last Name', 'parameter_key' => 'surname'],
+            ['name'=>'Email','parameter_key' => 'email_address'],
+            ['name'=>'Phone','parameter_key' => 'phone_number'],
+            ['name'=>'Notes','parameter_key' => 'notes'],
+            ['name'=>'Url','parameter_key' => 'cla_detecturl'],
+            ['name'=>'Prop ref number', 'parameter_key' => 'property_reference_number'],
+            ['name'=>'Address line', 'parameter_key' => 'address'],
+            ['name'=>'City', 'parameter_key' => 'cla_city']
+        ];
+        $customFields = remote::get(
+            'https://crm.respacio.com/ws/properties/getcustomfield',
+            ['x-api-key' => self::getApiKey()]
+        );
 
+        if(is_wp_error($customFields)) return $customFields->get_error_message();
+        $customFields = json_decode($customFields,true);
+        $customFields = $customFields['data']['customfield'];
+        //removing id
+        $newCustomFields = [];
+        foreach($customFields as $customField){
+            $newCustomFields[] = ['name' => $customField['name'],'parameter_key' => $customField['parameter_key']];
+        }
+        $newCustomFields = array_merge($default,$newCustomFields);
+
+        return update_option('respacio_houzez_custom_fields',$newCustomFields);
     }
+
+
 }
