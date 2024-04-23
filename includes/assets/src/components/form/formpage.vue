@@ -31,7 +31,7 @@ const getForms = () =>{
           forms.value = res;
           countChilds();
           formTypeAutoSelect();
-          console.log(res);
+          //console.log(res);
         }
 
       })
@@ -51,7 +51,7 @@ const getFormEntries = () =>{
       .then(res => res.json())
       .then(res => {
         formEntries.value = res;
-        console.log(res);
+        //console.log(res);
       })
       .catch(err => console.log(err));
 }
@@ -227,7 +227,7 @@ const toggleActive = (id = false) =>{
     <button class="w-full border border-2 border-dashed rounded-xl min-h-[250px] flex justify-center items-center bg-gray-100">
       <svg class="stroke-gray-200 w-16 h-16 stroke-1" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" >
         <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-      </svg>ß
+      </svg>
     </button>
   </div>
 <!--  form selector modal-->
@@ -318,7 +318,9 @@ const toggleActive = (id = false) =>{
         </div>
       </div>
       <!--Drawer-->
-      <Drawer v-if="toggleDrawer == entry.id"/>
+      <Drawer
+          v-if="toggleDrawer == entry.id"
+          v-bind:entry="entry"/>
     </li>
   </ul>
 

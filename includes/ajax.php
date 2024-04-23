@@ -8,6 +8,7 @@ use RespacioHouzezImport\account;
 use RespacioHouzezImport\cf7;
 use RespacioHouzezImport\gravity;
 use RespacioHouzezImport\forms;
+use RespacioHouzezImport\common;
 
 if (!defined('ABSPATH')) exit; // Exit if accessed directly
 
@@ -38,6 +39,10 @@ class ajax{
         add_action('wp_ajax_ajaxSaveEntry',['RespacioHouzezImport\ajax','ajaxSaveEntry']);
         add_action('wp_ajax_ajaxDeleteEntry',['RespacioHouzezImport\ajax','ajaxDeleteEntry']);
         add_action('wp_ajax_ajaxToggleEntryStatus',['RespacioHouzezImport\ajax','ajaxToggleEntryStatus']);
+        add_action('wp_ajax_ajaxGetCrmFormFields',['RespacioHouzezImport\ajax','ajaxGetCrmFormFields']);
+        add_action('wp_ajax_ajaxGetFormFields',['RespacioHouzezImport\ajax','ajaxGetFormFields']);
+        add_action('wp_ajax_ajaxGetEntryFormFieldMap',['RespacioHouzezImport\ajax','ajaxGetEntryFormFieldMap']);
+        add_action('wp_ajax_ajaxSetFormMapFields',['RespacioHouzezImport\ajax','ajaxSetFormMapFields']);
 	}
 
 	/** @noinspection PhpNoReturnAttributeCanBeAddedInspection
@@ -438,4 +443,55 @@ class ajax{
         echo json_encode(forms::toggleActiveStatus($id));
         wp_die();
     }
+
+    public static function ajaxGetCrmFormFields(){
+        if(!wp_verify_nonce($_POST['respacio_houzez_nonce'],'respacio_houzez_nonce')){
+            echo json_encode(['Invalid nonce']);
+            wp_die();
+        }
+        echo json_encode(option::getCrmFromFields());
+        wp_die();
+    }
+
+    public static function ajaxGetFormFields(){
+        if(!wp_verify_nonce($_POST['respacio_houzez_nonce'],'respacio_houzez_nonce')){
+            echo json_encode(['Invalid nonce']);
+            wp_die();
+        }
+        if(!isset($_POST['postId'])) return false;
+        $postId = sanitize_text_field($_POST['postId']);
+        echo json_encode(forms::getFormFields($postId));
+        wp_die();
+    }
+
+	public static function ajaxGetEntryFormFieldMap(){
+		if(!wp_verify_nonce($_POST['respacio_houzez_nonce'],'respacio_houzez_nonce')){
+            echo json_encode(['Invalid nonce']);
+            wp_die();
+        }
+
+		if(!isset($_POST['postId'])) return false;
+		$postId = sanitize_text_field( $_POST['postId'] );
+		echo json_encode(forms::getEntryFormFieldMap($postId));
+		wp_die();
+	}
+
+
+	public static function ajaxSetFormMapFields(){
+		if(!wp_verify_nonce($_POST['respacio_houzez_nonce'],'respacio_houzez_nonce')){
+            echo json_encode(['Invalid nonce']);
+            wp_die();
+        }
+		/**
+		 * terminate in case one of the below field missing
+		 */
+		if(!isset($_POST['postId']) || !isset($_POST['form_fields']) || !isset($_POST['crm_fields'])) return false;
+		
+		$postId = sanitize_text_field($_POST['postId']);
+		$formFields = common::sanitize_text_field_array(common::jsonToArray($_POST['form_fields']));
+		$crmFields = common::sanitize_text_field_array(common::jsonToArray($_POST['crm_fields']));
+
+		echo json_encode(forms::setEntryFormFieldMap($postId,$formFields,$crmFields));
+		wp_die();
+	}
 }

@@ -38,3 +38,9 @@
   .input-border{
       @apply border-gray-200 !important;
   }
+  .ghost-class{
+    @apply bg-blue-200 p-3;
+  }
+  .drag-class{
+    @apply !opacity-100 p-2 !transform !scale-150 bg-white;
+  }

@@ -132,4 +132,39 @@ class forms{
         }
     }
 
+    //for drag n drop area
+    public static function getEntryFormFieldMap($id = false){
+        if(!$id) return false;
+        $value = get_post_meta($id,'form_field_map',true);
+        if(!empty($value)){
+            return unserialize($value);
+        }
+
+        return false;
+    }
+
+    public static function setEntryFormFieldMap($id = false, $formFields = [], $crmFields = []){
+        if($id == false || empty($formFields) || empty($crmFields)) return false;
+        $meta = array(
+			'form_fields' => $formFields,
+			'crm_fields'  => $crmFields
+        );
+        return update_post_meta($id,'form_field_map',serialize($meta));
+    }
+
+    //for left side search area
+    public static function getFormFields($id = false){
+        if(!$id) return false;
+        //formType is similar to the class name
+        $formType = esc_html(get_post_meta($id,'form_type',true));
+        $formId = esc_html(get_post_meta($id,'form_id',true));
+        if(empty($formType) || empty($formId)) return false;
+
+        $fullClassName = 'RespacioHouzezImport\\'.$formType;
+        if(!class_exists($fullClassName)) return false;
+
+        return $fullClassName::getFormFields($formId);
+    }
+
+    
 }

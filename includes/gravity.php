@@ -22,4 +22,13 @@ class gravity{
            return false;
        }
    }
+
+   public static function getFormFields($formId){
+       if ( class_exists( 'GFAPI' ) ) {
+           // Get the Gravity Forms form object
+           $form = \GFAPI::get_form( $formId );
+           // Count the number of fields in the form
+           return $form['fields'];
+       }
+   }
 }

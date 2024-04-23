@@ -177,7 +177,7 @@ class option{
      * @param void
      * @return boolean
      */
-    public static function syncFormFields(){
+    public static function syncCrmFormFields(){
         $default = [
             ['name'=>'First Name', 'parameter_key' => 'name'],
             ['name'=>'Last Name', 'parameter_key' => 'surname'],
@@ -207,5 +207,12 @@ class option{
         return update_option('respacio_houzez_custom_fields',$newCustomFields);
     }
 
-
+    public static function getCrmFromFields(){
+        $value = get_option('respacio_houzez_custom_fields',false);
+        if($value){
+            return $value;
+        }
+        self::syncCrmFormFields();
+        return get_option('respacio_houzez_custom_fields',false);
+    }
 }
