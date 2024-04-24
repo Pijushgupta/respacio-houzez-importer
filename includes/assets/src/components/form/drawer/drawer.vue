@@ -134,6 +134,14 @@ const saveFormFieldMap = () =>{
   .catch(err => console.log(err));
 }
 
+const truncateString = (str) => {
+    if (str.length <= 45) {
+        return str;
+    } else {
+        return str.slice(0, 42) + '...';
+    }
+}
+
 //run anything on startup/mounting of this componenet
 onMounted(()=>{
   crmFromFields();
@@ -159,9 +167,9 @@ onMounted(()=>{
         tag="div"
         >
         <template #item="{element}">
-          <button class="px-2 py-1 m-1 border rounded capitalize shadow">
+          <button class="px-4 py-3 m-1 border rounded capitalize shadow">
             <div class="flex justify-center items-center">
-              <span>{{ element.type }}</span>
+              <span>{{ element.label }}</span>
               
             </div>
           </button>
@@ -184,7 +192,7 @@ onMounted(()=>{
         tag="div"
         >
         <template #item="{element}">
-          <button class="px-2 py-1 m-1 border rounded capitalize shadow">
+          <button class="px-4 py-3 m-1 border rounded capitalize shadow">
             <div class="flex justify-center items-center">
               <span>{{ element.name }}</span>
               
@@ -216,7 +224,7 @@ onMounted(()=>{
             <span class="flex justify-center items-center w-8 h-8 rounded shadow ">{{ index+1 }}</span>
             <div class="w-full flex justify-center items-center">
               <span>
-                {{ element.type }}
+                {{ truncateString(element.label) }}
               </span>
             </div>
             <div class="flex justify-center items-center" @click="removeFormFieldLeft(index)">
@@ -244,7 +252,7 @@ onMounted(()=>{
             <span class="flex justify-center items-center w-8 h-8 rounded shadow ">{{ index+1 }}</span>
             <div class="w-full flex justify-center items-center">
               <span>
-                {{ element.name }}
+                {{ truncateString(element.name) }}
               </span>
             </div>
             <div class="flex justify-center items-center" @click="removeFormFieldRight(index)">

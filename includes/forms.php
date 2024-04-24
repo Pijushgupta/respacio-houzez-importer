@@ -29,6 +29,26 @@ class forms{
 
     }
 
+    /**
+     * returns entry based post meta with the key form_id
+     */
+    public static function getEntryByFromIdMeta($id = false){
+        if($id == false) return;
+        $arr = [
+            'post_type' => 'respacio_forms',
+            'posts_per_page' => 1,
+            'meta_query' => array(
+                array(
+                    'key' => 'form_id',
+                    'value' => $id,
+                    'compare' => '='
+                )
+            )
+        ];
+
+        return get_posts($arr);
+    }
+
     public static function getAllEntries(){
         $args = [
             'post_type' => 'respacio_forms',

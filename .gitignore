@@ -1,1 +1,4 @@
 includes/assets/node_modules/
+.DS_Store
+includes/assets/.DS_Store
+includes/dist/.DS_Store

@@ -20,6 +20,7 @@ use RespacioHouzezImport\ajax;
 use RespacioHouzezImport\corn;
 use RespacioHouzezImport\image;
 use RespacioHouzezImport\cpt;
+use RespacioHouzezImport\gravity;
 
 /**
  * making sure to execute the plugin after `plugin_loaded` hook
@@ -42,9 +43,12 @@ add_action('plugin_loaded', function () {
 	image::activate();
 	corn::activate();
 	cpt::configure();
-
+	/** TODO: Remove below if no usage found*/
 	include('includes/admin-page.php');
+	gravity::onSubmit();
+	
 });
+
 
 
 /**
