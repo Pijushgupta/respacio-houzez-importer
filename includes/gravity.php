@@ -3,6 +3,8 @@
 namespace RespacioHouzezImport;
 use RespacioHouzezImport\remote;
 use RespacioHouzezImport\option;
+use RespacioHouzezImport\forms;
+
 
 class gravity{
 
@@ -21,7 +23,7 @@ class gravity{
 				   $formList[] = [
 						'id'=>esc_html($form['id']),
 						'title'=>esc_html($form['title']),
-						'type' => 'gravity'
+						'type' => pathinfo(basename(__FILE__), PATHINFO_FILENAME) // 'gravity.php' to 'gravity'
 						];
 			   }
 				return $formList;
@@ -40,30 +42,40 @@ class gravity{
 	}
 
 	public static function onSubmit(){
-		add_action( 'gform_after_submission', function($entry, $form){
+		/**
+		 * has_action to prevent multiple execution since 
+		 * action can be called multiple times in a life cycle 
+		 * DON'T REMOVE
+		 */
+		if(!has_action('gform_after_submission','\\'.__CLASS__.'::beforeHandleData')){
+			add_action( 'gform_after_submission','\\'.__CLASS__.'::beforeHandleData', 10, 2 );
+		}
+		
+	}
 
-			$formId = $entry['form_id'];
+	public static function beforeHandleData($entry,$form){
+		$formId = $entry['form_id'];
 
-			//get entry(posttype - respacio_forms) with meta key(form_id) - we have use fully qualified name since its not RespacioHouzezImport scope
-			$formEntry = \RespacioHouzezImport\forms::getEntryByFromIdMeta($formId);
-			if(empty($formEntry)) return false;
+		$formEntry = forms::getEntryByFromIdMeta($formId);
+		if(empty($formEntry)) return false;
 
-			$formEntryMeta = get_post_meta($formEntry[0]->ID,'form_field_map',true);
-			//if mapping not present
-			if($formEntryMeta == false || $formEntryMeta == '') return false;
+		//Checking if toggle button is on or off 
+		$isActive = esc_html(get_post_meta($formEntry[0]->ID,'form_active',true));
+		if($isActive != true) return false;
 
-			$formEntryMeta = unserialize($formEntryMeta);
-			//if mapping not present
-			if( !isset($formEntryMeta['form_fields']) || !isset($formEntryMeta['crm_fields']) ) return false;
-				
+		//getting form and crm fields map
+		$formEntryMeta = forms::getEntryFormFieldMap($formEntry[0]->ID);
+		
+		//if mapping not present
+		if($formEntryMeta == false) return false;
 
-
-			\RespacioHouzezImport\gravity::$formEntryMeta = $formEntryMeta;
-			\RespacioHouzezImport\gravity::$gravityForm = $form;
-			\RespacioHouzezImport\gravity::$gravityEntry = $entry;
-			\RespacioHouzezImport\gravity::handleData();
+		//if mapping not present
+		if( !isset($formEntryMeta['form_fields']) || !isset($formEntryMeta['crm_fields']) ) return false;
 			
-		}, 10, 2 );
+		self::$formEntryMeta = $formEntryMeta;
+		self::$gravityForm = $form;
+		self::$gravityEntry = $entry;
+		self::handleData();
 	}
 
 	public static function handleData(){
@@ -114,8 +126,8 @@ class gravity{
 		foreach($formFields as $k => $v){
 			$dataToCrm[$crmFields[$k]['parameter_key']] = $concatenated_values[$v['label']];	
 		}
-		var_dump($dataToCrm);
-		echo "\n\r";
+		
+		
 		$response = remote::post(
 			'https://crm.respacio.com/ws/contacts/add_enquiry',
 			$dataToCrm,

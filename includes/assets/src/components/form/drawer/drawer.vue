@@ -166,16 +166,22 @@ onMounted(()=>{
         drag-class="drag-class"
         tag="div"
         >
-        <template #item="{element}">
-          <button class="px-4 py-3 m-1 border rounded capitalize shadow">
-            <div class="flex justify-center items-center">
-              <span>{{ element.label }}</span>
-              
-            </div>
-          </button>
-        </template>
-
+          <template #item="{element}">
+           
+            <button 
+            v-if=" element.basetype !== 'submit'"
+             class="px-4 py-3 m-1 border rounded capitalize shadow">
+              <div class="flex justify-center items-center">
+                  <span v-if="props.entry.form_type == 'gravity'">{{ element.label }}</span>
+                  <span v-if="props.entry.form_type == 'cf7'">{{ element.name }}</span>
+                  <span v-if="props.entry.form_type == 'forminator'">{{ element.slug }}</span>
+                  <span v-if="props.entry.form_type == 'wpforms'">{{ element.label }}</span>
+                  
+              </div>
+            </button>
+          </template>        
         </draggable>
+        
           
       </div>
     
@@ -223,7 +229,16 @@ onMounted(()=>{
           <div class="flex flex-row">
             <span class="flex justify-center items-center w-8 h-8 rounded shadow ">{{ index+1 }}</span>
             <div class="w-full flex justify-center items-center">
-              <span>
+              <span v-if="props.entry.form_type == 'gravity'">
+                {{ truncateString(element.label) }}
+              </span>
+              <span v-if="props.entry.form_type == 'cf7'">
+                {{ truncateString(element.name) }}
+              </span>
+              <span v-if="props.entry.form_type == 'forminator'">
+                {{ truncateString(element.slug) }}
+              </span>
+              <span v-if="props.entry.form_type == 'wpforms'">
                 {{ truncateString(element.label) }}
               </span>
             </div>

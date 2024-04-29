@@ -361,12 +361,7 @@ class ajax{
             wp_die();
         }
 
-        echo json_encode(forms::getAllForms([
-            'cf7'=>'Contact 7',
-            'gravity'=>'Gravity Forms',
-            'forminator' => 'Forminator',
-            'wpforms' => 'WPForms'
-            ]));
+        echo json_encode(forms::getAllForms(supportedForms));
         wp_die();
     }
 

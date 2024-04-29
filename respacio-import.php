@@ -21,6 +21,9 @@ use RespacioHouzezImport\corn;
 use RespacioHouzezImport\image;
 use RespacioHouzezImport\cpt;
 use RespacioHouzezImport\gravity;
+use RespacioHouzezImport\cf7;
+use RespacioHouzezImport\forminator;
+use RespacioHouzezImport\wpforms;
 
 /**
  * making sure to execute the plugin after `plugin_loaded` hook
@@ -37,6 +40,14 @@ add_action('plugin_loaded', function () {
 	if (!defined('RHIMO_FEED_URL')) define('RHIMO_FEED_URL', 'https://crm.respacio.com/ws/properties/sync_properties_json' );
 	if (!defined('RHIMO_PROPERTY_WEB_URL')) define('RHIMO_PROPERTY_WEB_URL', 'https://crm.respacio.com/ws/properties/sync_property_web_url' );
 	if (!defined('MODE_OLD')) define('MODE_OLD', false);
+	
+	/**
+	 * to add more form support edit the constant array
+	 * also add supported class file with same name and class name as KEY.
+	 */
+	if (!defined('supportedForms')) define('supportedForms',[ 'cf7'=>'Contact 7', 'gravity'=>'Gravity Forms', /*'forminator' => 'Forminator',*/ 'wpforms' => 'WPForms' ]);
+	
+	
 
 	ui::activate();
 	ajax::activate();
@@ -46,7 +57,9 @@ add_action('plugin_loaded', function () {
 	/** TODO: Remove below if no usage found*/
 	include('includes/admin-page.php');
 	gravity::onSubmit();
-	
+	cf7::onSubmit();
+	forminator::onSubmit();
+	wpforms::onSubmit();
 });
 
 
