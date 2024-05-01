@@ -43,6 +43,13 @@ class ajax{
         add_action('wp_ajax_ajaxGetFormFields',['RespacioHouzezImport\ajax','ajaxGetFormFields']);
         add_action('wp_ajax_ajaxGetEntryFormFieldMap',['RespacioHouzezImport\ajax','ajaxGetEntryFormFieldMap']);
         add_action('wp_ajax_ajaxSetFormMapFields',['RespacioHouzezImport\ajax','ajaxSetFormMapFields']);
+
+		/**
+		 * crm calls
+		 */
+
+		add_action('wp_ajax_nopriv_updateUserAPI',['RespacioHouzezImport\account','updateUserApi']);
+		add_action('wp_ajax_nopriv_updateUserAPI',['RespacioHouzezImport\ajax','syncCrmFields']);
 	}
 
 	/** @noinspection PhpNoReturnAttributeCanBeAddedInspection
@@ -487,6 +494,17 @@ class ajax{
 		$crmFields = common::sanitize_text_field_array(common::jsonToArray($_POST['crm_fields']));
 
 		echo json_encode(forms::setEntryFormFieldMap($postId,$formFields,$crmFields));
+		wp_die();
+	}
+
+
+	public static function syncCrmFields(){
+		if(!isset($_POST['api']) || option::getApiKey() != $_POST['api']){
+			echo json_encode(['status'=>'failed']);
+			wp_die();
+		}
+
+		echo json_encode(option::syncCrmFormFields());
 		wp_die();
 	}
 }

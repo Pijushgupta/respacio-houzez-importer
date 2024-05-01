@@ -123,6 +123,24 @@ class account{
          */
         return false;
     }
+    
+    /**
+     * updates api from crm 
+     */
+    public static function updateUserApi($crm){
+        
+        if(!isset($_POST['signature']) || 
+        option::getRespacioSignature() != $_POST['signature'] || 
+        !isset($_POST['api'])){
+            echo json_encode(['status'=>'failed']);
+            wp_die();  
+        } 
+        
+        //sanitize api
+        $apiKey = sanitize_text_field($_POST['api']);
 
+        echo json_encode(option::setApiKey($apiKey));
+        wp_die();
+    }
    
 }

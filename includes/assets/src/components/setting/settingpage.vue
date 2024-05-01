@@ -92,13 +92,13 @@ if(license.isActivated == true){
     <div class="rounded-xl bg-white mb-1 shadow p-4">
       <div class="flex flex-row items-center justify-between">
         <div class="flex flex-col  w-1/2">
-          <div class="text-sm">Change API key </div>
-          <div class="text-xs">Enter your website API key from Respacio CRM</div>
+          <div class="text-sm">{{$t('ChangeAPIkey')}} </div>
+          <div class="text-xs">{{$t('EnteryourwebsiteAPIkeyfromRespacioCRM')}}</div>
         </div>
         <div class="flex flex-row w-1/2">
           <input class="w-full" type="text" v-model="key" />
-          <button v-if="license.isActivated == false" class="bg-blue-700 text-white px-4 py1 rounded-full ml-2" @click="verifyKey">Activate</button>
-          <button v-if="license.isActivated == true"  class="bg-blue-700 text-white px-4 py1 rounded-full ml-2" @click="removeKey" >Remove</button>
+          <button v-if="license.isActivated == false" class="bg-blue-700 text-white px-4 py1 rounded-full ml-2" @click="verifyKey">{{$t('Activate')}}</button>
+          <button v-if="license.isActivated == true"  class="bg-blue-700 text-white px-4 py1 rounded-full ml-2" @click="removeKey" >{{$t('Remove')}}</button>
         </div>
       </div>
     </div>

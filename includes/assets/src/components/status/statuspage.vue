@@ -137,25 +137,8 @@ const countRange = computed(() => {
 });
 
 const changePage = (ofs) =>{
-    console.log(ofs);
-    //for first page where we want offset to be 0
-    if(ofs == 0){
-        getLogs(perpage.value,ofs)
-        offset.value = 0
-        return false;
-    }
-    //for last page where we want post perpage to be the remaining posts 
-    if(ofs == (pages.value - 1)){
-        
-        let numberofposts = logs.value - (perpage.value * ofs)
-        let offset = perpage.value * ofs
-        getLogs(numberofposts,offset)
-        return false;
-    }
-    
-    getLogs(perpage.value,perpage.value * ofs)
-    
-    return false;
+  getLogs(perpage.value,perpage.value * ofs)
+  offset.value = ofs
 }
 
 </script>
@@ -196,12 +179,22 @@ const changePage = (ofs) =>{
         </div>
         <!-- end of property row -->
         <!-- for pagination -->
-        <div class="w-full" v-if="pages != 1">
-            <ul class="flex flex-row justify-end items-center ">
-                <li v-for="(n,index) in countRange" :key="index" v-on:click="changePage(index)" class="mr-2 last:mr-0 rounded-lg bg-white shadow px-3 py-1  cursor-pointer">{{ n }}</li>
-               
-            </ul>
+
+            <div class="w-full" v-if="pages!= 1">
+                <div class="flex justify-end">
+
+            <button class="mr-2 rounded-lg bg-white shadow px-3 py-1" @click="changePage(offset - 1)" :disabled="offset === 0">{{$t('Previous')}}</button>
+
+            <select v-model="offset" @change="changePage(offset)">
+
+            <option v-for="(n,index) in countRange" :key="index" :value="index">{{ n }}</option>
+
+            </select>
+
+            <button class="ml-2 rounded-lg bg-white shadow px-3 py-1" @click="changePage(offset + 1)" :disabled="offset === pages - 1">{{$t('Next')}}</button>
         </div>
+            </div>
+
         <!-- end of pagination -->
     </div>
 </template>

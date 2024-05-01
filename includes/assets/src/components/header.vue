@@ -29,8 +29,8 @@ const windowStore = useBreadcrumbStore()
     <template v-if="windowStore.activeWindow == 1"><span class="cursor-pointer font-medium">{{$t('status')}}</span></template>
     <template v-if="windowStore.activeWindow == 2"><span class="cursor-pointer font-medium">Cron Jobs</span></template>
     <template v-if="windowStore.activeWindow == 3"><span class="cursor-pointer font-medium">{{$t('export')}}</span></template>
-    <template v-if="windowStore.activeWindow == 4"><span class="cursor-pointer font-medium">Settings</span></template>
-    <template v-if="windowStore.activeWindow == 5"><span class="cursor-pointer font-medium">{{ $t('KnowledgeBase') }}</span></template>
+    <template v-if="windowStore.activeWindow == 4"><span class="cursor-pointer font-medium">{{$t('Settings')}}</span></template>
+    <template v-if="windowStore.activeWindow == 5"><span class="cursor-pointer font-medium">{{$t('KnowledgeBase')}}</span></template>
     
     <template v-if="windowStore.activeWindow == 7"><span class="cursor-pointer font-medium">{{ $t('Connect') }}</span></template>
     <template v-if="windowStore.activeWindow == 8"><span class="cursor-pointer font-medium">{{ $t('Forms') }}</span></template>

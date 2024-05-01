@@ -158,7 +158,7 @@ onMounted(()=>{
   <div class="flex flex-row w-full py-3">
     <!--form field search-->
     <div class="w-1/2 pr-1.5 ">
-      <span class="mb-1 block">Form Fields</span>
+      <span class="mb-1 block">{{$t('FormFields')}}</span>
       <div class="min-w-full h-[100px] border !rounded p-1 !border-gray-200">
         <draggable 
         v-model="freshFormField"
@@ -188,7 +188,7 @@ onMounted(()=>{
     </div>
     <!--crm field search-->
     <div class="w-1/2 pl-1.5 ">
-      <span class="mb-1 block">Crm Fields</span>
+      <span class="mb-1 block">{{$t('CrmFields')}}</span>
       <div class="min-w-full h-[100px] border !rounded p-1 !border-gray-200 overflow-y-auto ">
         <draggable 
         v-model="freshCrmFormField"
@@ -284,7 +284,7 @@ onMounted(()=>{
   </div>
 <!-- footer button area -->
   <div class="flex flex-row justify-end mt-3">
-      <button class="bg-blue-800 px-6 py-2 rounded text-white" @click="saveFormFieldMap">Save</button>
+      <button class="bg-blue-800 px-6 py-2 rounded text-white" @click="saveFormFieldMap">{{$t('Save')}}</button>
   </div>
 </div>
 </template>

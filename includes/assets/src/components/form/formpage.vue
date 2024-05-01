@@ -245,14 +245,14 @@ const toggleActive = (id = false) =>{
           <template v-if="forms !== false && childItems !== 0">
             <!-- form type selection -->
             <div class="mb-2 flex flex-col">
-              <label class="font-semibold mb-1">Select Form Type</label>
+              <label class="font-semibold mb-1">{{ $t('SelectFormType') }}</label>
               <select class="input-padding input-border" v-model="formType">
                 <option  v-for="(form,index) in forms" :key="index" :value="form.type" >{{form.name}}</option>
               </select>
             </div>
             <!-- form selection -->
             <div class="mb-4 flex flex-col">
-              <label class="font-semibold mb-1">Select Form</label>
+              <label class="font-semibold mb-1">{{ $t('SelectForm') }}</label>
               <select class="input-padding input-border" v-model="selectedForm">
                 <option v-for="(e,i) in formList" :key="i" :value="e.id">{{e.title}}</option>
 
@@ -260,11 +260,11 @@ const toggleActive = (id = false) =>{
             </div>
             <!-- Submit Button -->
             <div class="flex flex-col">
-              <button class="bg-blue-800 text-white py-3 rounded-lg w-full flex flex-row justify-center align-middle" type="submit" @click.prevent="save">Select</button>
+              <button class="bg-blue-800 text-white py-3 rounded-lg w-full flex flex-row justify-center align-middle" type="submit" @click.prevent="save">{{ $t('Select') }}</button>
             </div>
           </template>
           <template v-if="forms === false || childItems === 0">
-            <span>No form was found.</span>
+            <span>{{$t('Noformwasfound')}}.</span>
           </template>
         </form>
       </div>
@@ -309,10 +309,10 @@ const toggleActive = (id = false) =>{
           if(toggleDrawer == entry.id){
             toggleDrawer = false;
           }else{
-          toggleDrawer = entry.id
+            toggleDrawer = entry.id
           }
         }">
-          <svg id="setting" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 stroke-gray-200 hover:stroke-gray-400 ">
+          <svg id="setting" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 stroke-gray-200 hover:stroke-gray-400  " v-bind:class="toggleDrawer == entry.id ? 'rotate-90 ':''">
             <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
           </svg>
         </div>

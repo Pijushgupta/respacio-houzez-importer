@@ -11,8 +11,8 @@
 
         </div>
         <div class="flex flex-col ml-3">
-          <div class="text-sm">Forms</div>
-          <div class="text-xs">Integrate forms with crm</div>
+          <div class="text-sm">{{$t('Forms')}}</div>
+          <div class="text-xs">{{$t('Integrateformswithcrm')}}</div>
         </div>
       </div>
 

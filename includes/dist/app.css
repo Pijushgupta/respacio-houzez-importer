@@ -855,6 +855,10 @@ select {
 .max-w-\[400px\] {
   max-width: 400px;
 }
+.rotate-90 {
+  --tw-rotate: 90deg;
+  transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
+}
 .cursor-pointer {
   cursor: pointer;
 }
@@ -1006,10 +1010,6 @@ select {
   padding-left: 0.5rem;
   padding-right: 0.5rem;
 }
-.px-3 {
-  padding-left: 0.75rem;
-  padding-right: 0.75rem;
-}
 .px-4 {
   padding-left: 1rem;
   padding-right: 1rem;
@@ -1033,6 +1033,10 @@ select {
 .py-5 {
   padding-top: 1.25rem;
   padding-bottom: 1.25rem;
+}
+.px-3 {
+  padding-left: 0.75rem;
+  padding-right: 0.75rem;
 }
 .pl-1 {
   padding-left: 0.25rem;
@@ -1279,9 +1283,6 @@ select {
   .first\:rounded-t-xl:first-child {
   border-top-left-radius: 0.75rem;
   border-top-right-radius: 0.75rem;
-}
-  .last\:mr-0:last-child {
-  margin-right: 0px;
 }
   .last\:rounded-b-xl:last-child {
   border-bottom-right-radius: 0.75rem;
